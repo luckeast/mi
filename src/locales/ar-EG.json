@@ -1,0 +1,128 @@
+{
+  "navbar": {
+    "Home": "الصفحة الرئيسية",
+    "Profile": "حسابي",
+    "Mock": "🗂️ تجربة",
+    "Charts": "📊 الرسوم البيانية",
+    "UnoCSS": "⚡ UnoCSS",
+    "Counter": "🍍 حالة دائمة",
+    "KeepAlive": "♻️ تخزين الصفحة",
+    "ScrollCache": "📍 تخزين التمرير",
+    "Login": "🧑‍💻 تسجيل الدخول",
+    "Register": "🧑‍💻 تسجيل",
+    "ForgotPassword": "❓ نسيت كلمة المرور",
+    "Settings": "⚙️ الإعدادات",
+    "404": "⚠️ صفحة 404",
+    "Undefined": "🤷 عنوان غير محدد"
+  },
+
+  "tabbar": {
+    "home": "الرئيسية",
+    "profile": "حسابي"
+  },
+
+  "home": {
+    "darkMode": "🌗 الوضع المظلم",
+    "language": "📚 متعدد اللغات",
+    "settings": "الإعدادات",
+    "examples": "أمثلة"
+  },
+
+  "profile": {
+    "login": "تسجيل الدخول",
+    "settings": "الإعدادات",
+    "docs": "المستندات"
+  },
+
+  "mock": {
+    "fromAsyncData": "بيانات من طلب غير متزامن",
+    "noData": "لا توجد بيانات حاليا",
+    "pull": "طلب",
+    "reset": "مسح"
+  },
+
+  "charts": {
+    "January": "يناير",
+    "February": "فبراير",
+    "March": "مارس",
+    "April": "أبريل",
+    "May": "مايو",
+    "June": "يونيو"
+  },
+
+  "counter": {
+    "description": "يتم الحفاظ على حالة هذا العداد عبر Pinia. جرب تحديث الصفحة!"
+  },
+
+  "unocss": {
+    "title": "مرحبًا، Unocss!",
+    "description": "هذا مثال بسيط لاستخدام Unocss.",
+    "button": "زر"
+  },
+
+  "keepAlive": {
+    "label": "سيتم تخزين المكون الحالي"
+  },
+
+  "scrollCache": {
+    "sectionTitle": "عنوان القسم",
+    "sectionText": "محتوى القسم محتوى القسم محتوى القسم محتوى القسم محتوى القسم محتوى القسم",
+    "finished": "لقد وصلت إلى النهاية ~",
+    "loading": "جاري التحميل..."
+  },
+
+  "login": {
+    "login": "تسجيل الدخول",
+    "logout": "تسجيل الخروج",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "pleaseEnterEmail": "الرجاء إدخال البريد الإلكتروني",
+    "pleaseEnterPassword": "الرجاء إدخال كلمة المرور",
+    "signUp": "ليس لديك حساب؟ انقر للتسجيل",
+    "forgotPassword": "نسيت كلمة المرور؟"
+  },
+
+  "forgotPassword": {
+    "email": "البريد الإلكتروني",
+    "code": "رمز التحقق",
+    "password": "كلمة المرور",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "pleaseEnterEmail": "الرجاء إدخال البريد الإلكتروني",
+    "pleaseEnterCode": "الرجاء إدخال رمز التحقق",
+    "pleaseEnterPassword": "الرجاء إدخال كلمة المرور",
+    "pleaseEnterConfirmPassword": "الرجاء إعادة إدخال كلمة المرور",
+    "passwordsDoNotMatch": "كلمتا المرور غير متطابقتين",
+    "confirm": "تأكيد",
+    "backToLogin": "العودة لتسجيل الدخول",
+    "getCode": "الحصول على الرمز",
+    "gettingCode": "جاري الحصول على الرمز",
+    "sendCodeSuccess": "تم الإرسال، رمز التحقق هو",
+    "passwordResetSuccess": "تم إعادة تعيين كلمة المرور بنجاح"
+  },
+
+  "register": {
+    "email": "البريد الإلكتروني",
+    "code": "رمز التحقق",
+    "nickname": "الاسم المستعار",
+    "password": "كلمة المرور",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "pleaseEnterEmail": "الرجاء إدخال البريد الإلكتروني",
+    "pleaseEnterCode": "الرجاء إدخال رمز التحقق",
+    "pleaseEnterNickname": "الرجاء إدخال الاسم المستعار",
+    "pleaseEnterPassword": "الرجاء إدخال كلمة المرور",
+    "pleaseEnterConfirmPassword": "الرجاء إعادة إدخال كلمة المرور",
+    "passwordsDoNotMatch": "كلمتا المرور غير متطابقتين",
+    "confirm": "تأكيد",
+    "backToLogin": "العودة لتسجيل الدخول",
+    "getCode": "الحصول على الرمز",
+    "gettingCode": "جاري الحصول على الرمز",
+    "sendCodeSuccess": "تم الإرسال، رمز التحقق هو",
+    "registerSuccess": "تم التسجيل بنجاح"
+  },
+
+  "settings": {
+    "logout": "تسجيل الخروج",
+    "currentVersion": "الإصدار الحالي",
+    "confirmTitle": "تأكيد الخروج؟"
+  }
+}
