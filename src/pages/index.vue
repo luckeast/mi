@@ -27,6 +27,10 @@ function onLanguageConfirm(event: { selectedOptions: PickerColumn }) {
   locale.value = event.selectedOptions[0].value as string
   showLanguagePicker.value = false
 }
+function turn() {
+  // window.location.href = 'https://test-h5.snoperp.com/h5_web/forweb?webCode=6666'
+  window.open('https://test-h5.snoperp.com/h5_web/forweb?webCode=6666', '_blank')
+}
 </script>
 
 <template>
@@ -47,6 +51,10 @@ function onLanguageConfirm(event: { selectedOptions: PickerColumn }) {
       :value="language"
       @click="showLanguagePicker = true"
     />
+
+    <div @click="turn">
+      跳转
+    </div>
   </van-cell-group>
 
   <van-cell-group :title="$t('home.examples')" :border="false" :inset="true">
