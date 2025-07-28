@@ -6,7 +6,9 @@ import email from '~/images/email.png'
 import download from '~/images/download.png'
 import ty from '~/images/ty.png'
 import jianto from '~/images/jianto.png'
-// const { t } = useI18n()
+import { getAppConfig } from '@/api'
+
+const { t } = useI18n()
 
 // const checked = computed({
 //   get: () => isDark.value,
@@ -25,16 +27,32 @@ import jianto from '~/images/jianto.png'
 
 const showLanguagePicker = ref(false)
 const languageValues = ref<Array<string>>([locale.value])
-// const language = computed(() => languageColumns.find(l => l.value === locale.value).text)
+const showCustomLanguagePopup = ref(false)
+const currentLanguage = computed(() => languageColumns.find(l => l.value === locale.value)?.text || 'English')
 
 function onLanguageConfirm(event: { selectedOptions: PickerColumn }) {
   locale.value = event.selectedOptions[0].value as string
   showLanguagePicker.value = false
 }
+
+function openCustomLanguagePopup() {
+  showCustomLanguagePopup.value = true
+}
+
+function selectLanguage(lang: string) {
+  locale.value = lang
+  showCustomLanguagePopup.value = false
+}
 // function turn() {
 //   // window.location.href = 'https://test-h5.snoperp.com/h5_web/forweb?webCode=6666'
 //   window.open('https://test-h5.snoperp.com/h5_web/forweb?webCode=6666', '_blank')
 // }
+async function downloadApp() {
+  console.warn('downloadApp')
+  getAppConfig().then(({ code, result }) => {
+    console.warn(result, code)
+  })
+}
 </script>
 
 <template>
@@ -52,7 +70,7 @@ function onLanguageConfirm(event: { selectedOptions: PickerColumn }) {
             <span style="color: #fff; font-size: 24px; font-weight: bold;">AppName</span>
           </div>
           <div style="display: flex; align-items: center; gap: 12px;">
-            <span style="color: #fff; font-size: 18px;">English▼</span>
+            <span style="color: #fff; font-size: 18px; cursor: pointer;" @click="openCustomLanguagePopup">{{ currentLanguage }}▼</span>
             <div style="width: 40px; height: 40px; background: #ccc; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px;">
               <van-image :src="email" />
             </div>
@@ -61,13 +79,13 @@ function onLanguageConfirm(event: { selectedOptions: PickerColumn }) {
         <!-- 标题 -->
         <div style="margin-top: 100px; text-align: center;">
           <div style="color: #fff; font-size: 40px; font-weight: bold; line-height: 1.1; text-shadow: 0 2px 8px rgba(0,0,0,0.3);">
-            Live Video chat,<br>Turn strangers into friends.
+            {{ t('home.mainTitle') }}<br>{{ t('home.mainSubTitle') }}
           </div>
         </div>
         <!-- 底部按钮 -->
         <div style="position: absolute; left: 0; bottom: 40px; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 16px;">
           <div style="display: flex; gap: 16px;">
-            <div style="color: #fff; border-radius: 12px; padding: 10px 18px 10px 50px; display: flex; align-items: center; font-size: 18px; font-weight: 500;">
+            <div style="color: #fff; border-radius: 12px; padding: 10px 18px 10px 50px; display: flex; align-items: center; font-size: 18px; font-weight: 500;" @click="downloadApp">
               <van-image :src="download" style="width: 123px;height: 43px;" />
             </div>
             <div style=" color: #fff; border-radius: 12px; padding: 10px 50px 10px 18px; display: flex; align-items: center; font-size: 18px; font-weight: 500;">
@@ -82,7 +100,7 @@ function onLanguageConfirm(event: { selectedOptions: PickerColumn }) {
         </div>
       </div>
     </van-swipe-item>
-    <van-swipe-item style="background: #fafbfc; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 0;">
+    <van-swipe-item style="background: #fafbfc; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 0;overflow-y: auto;">
       <!-- 顶部信封icon -->
       <div style="margin-top: 32px; margin-bottom: 12px;">
         <div style="width: 48px; height: 32px; border: 2px dashed #bbb; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #bbb; font-size: 24px;">
@@ -91,7 +109,7 @@ function onLanguageConfirm(event: { selectedOptions: PickerColumn }) {
       </div>
       <!-- About Us 标题 -->
       <div style="font-size: 32px; font-weight: bold; text-align: center; margin-bottom: 32px;color: black;">
-        About Us
+        {{ t('home.aboutUs') }}
       </div>
       <!-- 第一行：左图右文 -->
       <div style="display: flex; width: 90vw; align-items: flex-start; margin-bottom: 48px;color: black;">
@@ -103,14 +121,14 @@ function onLanguageConfirm(event: { selectedOptions: PickerColumn }) {
         </div>
         <div style="flex: 1.2; padding-left: 32px; display: flex; flex-direction: column; justify-content: center;">
           <div style="font-size: 20px; font-weight: bold; margin-bottom: 8px;">
-            Make<br>Friends Globally
+            {{ t('home.makeFriends') }}<br>{{ t('home.friendsGlobally') }}
           </div>
           <div style="color: #bbb; font-size: 14px; margin-bottom: 24px; line-height: 1.5;">
-            Break through geographical and cultural barriers. Sogo allows users to have in-depth conversations with people from diverse backgrounds and time zones, facilitating cross-cultural exchanges and friendship-building.
+            {{ t('home.makeFriendsDesc') }}
           </div>
           <div style="display: flex;">
             <button style="background: linear-gradient(90deg, #a18fff 0%, #5ee7df 100%); color: #fff; border: none; border-radius: 32px; padding: 10px 36px; font-size: 14px; font-weight: 500; cursor: pointer;">
-              Start Video Chat
+              {{ t('home.startVideoChat') }}
             </button>
           </div>
         </div>
@@ -125,14 +143,14 @@ function onLanguageConfirm(event: { selectedOptions: PickerColumn }) {
         </div>
         <div style="flex: 1.2; padding-right: 32px; display: flex; flex-direction: column; justify-content: center;">
           <div style="font-size: 20px; font-weight: bold; margin-bottom: 8px;">
-            Instant Video Chat
+            {{ t('home.instantVideoChat') }}
           </div>
           <div style="color: #bbb; font-size: 14px; margin-bottom: 24px; line-height: 1.5;">
-            Start interactive and engaging video chats immediately. Express your unique self and enjoy meaningful conversations with people from diverse backgrounds.
+            {{ t('home.instantVideoChatDesc') }}
           </div>
           <div style="display: flex;">
             <button style="background: linear-gradient(90deg, #a18fff 0%, #5ee7df 100%); color: #fff; border: none; border-radius: 32px; padding: 10px 36px; font-size: 14px; font-weight: 500; cursor: pointer;">
-              Start Video Chat
+              {{ t('home.startVideoChat') }}
             </button>
           </div>
         </div>
@@ -176,6 +194,20 @@ function onLanguageConfirm(event: { selectedOptions: PickerColumn }) {
       @cancel="showLanguagePicker = false"
     />
   </van-popup>
+
+  <!-- 自定义多语言弹窗 -->
+  <div v-if="showCustomLanguagePopup" class="language-popup-overlay" @click="showCustomLanguagePopup = false">
+    <div class="language-popup" @click.stop>
+      <div
+        v-for="lang in languageColumns"
+        :key="lang.value"
+        class="language-option"
+        @click="selectLanguage(lang.value)"
+      >
+        {{ lang.text }}
+      </div>
+    </div>
+  </div>
 </template>
 
 <route lang="json5">
@@ -183,3 +215,47 @@ function onLanguageConfirm(event: { selectedOptions: PickerColumn }) {
   name: 'Home'
 }
 </route>
+
+<style scoped>
+.language-popup-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding-top: 70px;
+}
+
+.language-popup {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  min-width: 120px;
+  margin-right: 60px;
+}
+
+.language-option {
+  padding: 12px 24px;
+  color: #007aff;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid #f0f0f0;
+  text-align: center;
+}
+
+.language-option:last-child {
+  border-bottom: none;
+}
+
+.language-option:hover {
+  background-color: #f8f9fa;
+}
+</style>

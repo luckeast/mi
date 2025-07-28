@@ -14,6 +14,24 @@ const request = axios.create({
   // API 请求的默认前缀
   baseURL: import.meta.env.VITE_APP_API_BASE_URL,
   timeout: 6000, // 请求超时时间
+  headers: {
+    'ver': '7.1.0',
+    'device-id': '49a4098d-1eab-4bac-8757-e906e6eadc34',
+    'model': 'web',
+    'lang': 'zh',
+    'sys_lan': 'zh',
+    'is_anchor': 'false',
+    'pkg': 'com.gewingeath.ios',
+    'platform': 'iOS',
+    'device_lang': 'zh',
+    'device_country': 'CN',
+    'time_zone': 'Asia/Shanghai',
+    'platform_ver': '1.0.0',
+    'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxOTQ5NzU5MDE3MjkxMjE4OTQ0IiwidXNlcl90eXBlIjoxLCJleHAiOjQ5MDkzNjczNDksImNyZWF0ZWQiOjE3NTM2OTM3NDk5MzR9.8R2QLt7b-R4hJzNm7JpXR1HourH1tIT5mLUMCt6TIuDdJxpIkTl7lmfMlH3wMVbKLyuzV1ql62gP_kfu7Hetbg',
+    'utm-source': '',
+    'rc_type': 'SG',
+    'sec_ver': '0',
+  },
 })
 
 export type RequestError = AxiosError<{
