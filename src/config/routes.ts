@@ -4,6 +4,6 @@
  * However, the Tabbar is shown on these routes.
  */
 export const rootRouteList: readonly string[] = [
-  'Home',
-  'Profile',
+  'Home1',
+  'Profile1',
 ]
