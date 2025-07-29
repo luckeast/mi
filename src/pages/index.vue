@@ -6,6 +6,12 @@ import email from '~/images/email.png'
 import download from '~/images/download.png'
 import ty from '~/images/ty.png'
 import jianto from '~/images/jianto.png'
+import first from '~/images/first.png'
+import second from '~/images/second.png'
+import three from '~/images/three.png'
+import fore from '~/images/fore.png'
+import five from '~/images/five.png'
+import up from '~/images/up.png'
 import { getAppConfig } from '@/api'
 
 const { t } = useI18n()
@@ -29,7 +35,11 @@ const showLanguagePicker = ref(false)
 const languageValues = ref<Array<string>>([locale.value])
 const showCustomLanguagePopup = ref(false)
 const currentLanguage = computed(() => languageColumns.find(l => l.value === locale.value)?.text || 'English')
+const appInstallUrl = ref('')
 
+onMounted(async () => {
+  await getAppInstallUrl()
+})
 function onLanguageConfirm(event: { selectedOptions: PickerColumn }) {
   locale.value = event.selectedOptions[0].value as string
   showLanguagePicker.value = false
@@ -39,117 +49,185 @@ function openCustomLanguagePopup() {
   showCustomLanguagePopup.value = true
 }
 
-function selectLanguage(lang: string) {
+function selectLanguage(lang: any) {
   locale.value = lang
   showCustomLanguagePopup.value = false
 }
-// function turn() {
-//   // window.location.href = 'https://test-h5.snoperp.com/h5_web/forweb?webCode=6666'
-//   window.open('https://test-h5.snoperp.com/h5_web/forweb?webCode=6666', '_blank')
-// }
-async function downloadApp() {
-  console.warn('downloadApp')
-  getAppConfig().then(({ code, result }) => {
-    console.warn(result, code)
+function jumpToB() {
+  // window.location.href = 'https://test-h5.snoperp.com/h5_web/forweb?webCode=6666'
+  window.open('https://test-h5.snoperp.com/h5_web/forweb?webCode=true', '_blank')
+}
+function downloadApp() {
+  if (appInstallUrl.value) {
+    window.open(appInstallUrl.value, '_blank')
+  }
+}
+async function getAppInstallUrl() {
+  getAppConfig().then((data) => {
+    const extData = Array.isArray(data.data.items)
+      ? data.data.items.find(item => item.name === 'app_ext_data')
+      : undefined
+    appInstallUrl.value = extData?.data.app_install_url
   })
 }
 </script>
 
 <template>
-  <van-swipe style="height: 100vh;" vertical :loop="false" :show-indicators="false">
-    <van-swipe-item style="position: relative; width: 100vw; height: 100vh; overflow: hidden;">
-      <video src="@/assets/video/home.mov" autoplay muted :loop="true" style="width: 100%; height: 100%; object-fit: cover; display: block; position: absolute; left: 0; top: 0; z-index: 1;" />
-      <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 5;">
+  <van-swipe class="swipe-full-height" vertical :loop="false" :show-indicators="false">
+    <van-swipe-item class="swipe-item-bg">
+      <video src="@/assets/video/home.mov" autoplay muted :loop="true" class="video-bg" />
+      <div class="swipe-item-content">
         <!-- 顶部栏 -->
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px;">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <div style="width: 40px; height: 40px; background: #ccc; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+        <div class="top-bar">
+          <div class="top-bar-left">
+            <div class="logo-box">
               <!-- <image src="@/assets/logo.png" /> -->
               <van-image :src="logo" />
             </div>
-            <span style="color: #fff; font-size: 24px; font-weight: bold;">AppName</span>
+            <span class="app-title">AppName</span>
           </div>
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <span style="color: #fff; font-size: 18px; cursor: pointer;" @click="openCustomLanguagePopup">{{ currentLanguage }}▼</span>
-            <div style="width: 40px; height: 40px; background: #ccc; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+          <div class="top-bar-right">
+            <span class="lang-switch" @click="openCustomLanguagePopup">{{ currentLanguage }}▼</span>
+            <div class="email-box">
               <van-image :src="email" />
             </div>
           </div>
         </div>
         <!-- 标题 -->
-        <div style="margin-top: 100px; text-align: center;">
-          <div style="color: #fff; font-size: 40px; font-weight: bold; line-height: 1.1; text-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+        <div class="main-title-wrap">
+          <div class="main-title-text">
             {{ t('home.mainTitle') }}<br>{{ t('home.mainSubTitle') }}
           </div>
         </div>
         <!-- 底部按钮 -->
-        <div style="position: absolute; left: 0; bottom: 40px; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 16px;">
-          <div style="display: flex; gap: 16px;">
-            <div style="color: #fff; border-radius: 12px; padding: 10px 18px 10px 50px; display: flex; align-items: center; font-size: 18px; font-weight: 500;" @click="downloadApp">
-              <van-image :src="download" style="width: 123px;height: 43px;" />
+        <div class="bottom-btns-wrap">
+          <div class="bottom-btns">
+            <div class="download-btn" @click="downloadApp">
+              <van-image :src="download" class="download-img" />
             </div>
-            <div style=" color: #fff; border-radius: 12px; padding: 10px 50px 10px 18px; display: flex; align-items: center; font-size: 18px; font-weight: 500;">
-              <van-image :src="ty" style="width: 123px;height: 43px;" />
+            <div class="jump-btn" @click="jumpToB">
+              <van-image :src="ty" class="download-img" />
             </div>
           </div>
-          <div style="margin-top: 16px;">
-            <div style="width: 48px; height: 32px;  display: flex; align-items: center; justify-content: center; color: #fff; font-size: 24px; opacity: 0.7;">
+          <div class="jianto-wrap">
+            <div class="jianto-img-box">
               <van-image :src="jianto" />
             </div>
           </div>
         </div>
       </div>
     </van-swipe-item>
-    <van-swipe-item style="background: #fafbfc; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 0;overflow-y: auto;">
+    <van-swipe-item class="swipe-item-light">
       <!-- 顶部信封icon -->
-      <div style="margin-top: 32px; margin-bottom: 12px;">
-        <div style="width: 48px; height: 32px; border: 2px dashed #bbb; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #bbb; font-size: 24px;">
-          <van-image :src="jianto" style="width: 32px; height: 20px;" />
+      <div class="about-top-icon">
+        <div class="about-top-icon-inner">
+          <van-image :src="up" class="about-top-img" />
         </div>
       </div>
       <!-- About Us 标题 -->
-      <div style="font-size: 32px; font-weight: bold; text-align: center; margin-bottom: 32px;color: black;">
+      <div class="about-title">
         {{ t('home.aboutUs') }}
       </div>
       <!-- 第一行：左图右文 -->
-      <div style="display: flex; width: 90vw; align-items: flex-start; margin-bottom: 48px;color: black;">
-        <div style="flex: 1; display: flex; justify-content: center;">
-          <div style="width: 142px; height: 288px; background: #eee; border-radius: 36px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); overflow: hidden; display: flex; align-items: center; justify-content: center;">
-            <!-- 手机占位图 -->
-            <span style="color: #bbb; font-size: 18px;">Phone Image</span>
+      <div class="about-row about-row-1">
+        <div class="about-row-img-box">
+          <div class="about-row-img-placeholder">
+            <van-image :src="first" />
           </div>
         </div>
-        <div style="flex: 1.2; padding-left: 32px; display: flex; flex-direction: column; justify-content: center;">
-          <div style="font-size: 20px; font-weight: bold; margin-bottom: 8px;">
+        <div class="about-row-content about-row-content-1">
+          <div class="about-row-title">
             {{ t('home.makeFriends') }}<br>{{ t('home.friendsGlobally') }}
           </div>
-          <div style="color: #bbb; font-size: 14px; margin-bottom: 24px; line-height: 1.5;">
+          <div class="about-row-desc">
             {{ t('home.makeFriendsDesc') }}
           </div>
-          <div style="display: flex;">
-            <button style="background: linear-gradient(90deg, #a18fff 0%, #5ee7df 100%); color: #fff; border: none; border-radius: 32px; padding: 10px 36px; font-size: 14px; font-weight: 500; cursor: pointer;">
+          <div class="about-row-btns" @click="jumpToB">
+            <button class="about-row-btn">
               {{ t('home.startVideoChat') }}
             </button>
           </div>
         </div>
       </div>
       <!-- 第二行：左文右图 -->
-      <div style="display: flex; width: 90vw; max-width: 700px; align-items: flex-start; flex-direction: row-reverse;color: black;">
-        <div style="flex: 1; display: flex; justify-content: center;">
-          <div style="width: 142px; height: 288px; background: #eee; border-radius: 36px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); overflow: hidden; display: flex; align-items: center; justify-content: center;">
-            <!-- 手机占位图 -->
-            <span style="color: #bbb; font-size: 18px;">Phone Image</span>
+      <div class="about-row about-row-2" style="margin-bottom: 10px;">
+        <div class="about-row-img-box">
+          <div class="about-row-img-placeholder">
+            <van-image :src="second" />
           </div>
         </div>
-        <div style="flex: 1.2; padding-right: 32px; display: flex; flex-direction: column; justify-content: center;">
-          <div style="font-size: 20px; font-weight: bold; margin-bottom: 8px;">
+        <div class="about-row-content about-row-content-2">
+          <div class="about-row-title" @click="jumpToB">
             {{ t('home.instantVideoChat') }}
           </div>
-          <div style="color: #bbb; font-size: 14px; margin-bottom: 24px; line-height: 1.5;">
+          <div class="about-row-desc">
             {{ t('home.instantVideoChatDesc') }}
           </div>
-          <div style="display: flex;">
-            <button style="background: linear-gradient(90deg, #a18fff 0%, #5ee7df 100%); color: #fff; border: none; border-radius: 32px; padding: 10px 36px; font-size: 14px; font-weight: 500; cursor: pointer;">
+          <div class="about-row-btns" @click="jumpToB">
+            <button class="about-row-btn">
+              {{ t('home.startVideoChat') }}
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- 第三行：左图右文 -->
+      <div class="about-row about-row-1">
+        <div class="about-row-img-box">
+          <div class="about-row-img-placeholder">
+            <van-image :src="three" />
+          </div>
+        </div>
+        <div class="about-row-content about-row-content-1">
+          <div class="about-row-title">
+            {{ t('home.makeFriends') }}<br>{{ t('home.friendsGlobally') }}
+          </div>
+          <div class="about-row-desc">
+            {{ t('home.makeFriendsDesc') }}
+          </div>
+          <div class="about-row-btns" @click="jumpToB">
+            <button class="about-row-btn">
+              {{ t('home.startVideoChat') }}
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- 第四行：左文右图 -->
+      <div class="about-row about-row-2" style="margin-bottom: 10px;">
+        <div class="about-row-img-box">
+          <div class="about-row-img-placeholder">
+            <van-image :src="fore" />
+          </div>
+        </div>
+        <div class="about-row-content about-row-content-2">
+          <div class="about-row-title" @click="jumpToB">
+            {{ t('home.instantVideoChat') }}
+          </div>
+          <div class="about-row-desc">
+            {{ t('home.instantVideoChatDesc') }}
+          </div>
+          <div class="about-row-btns" @click="jumpToB">
+            <button class="about-row-btn">
+              {{ t('home.startVideoChat') }}
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- 第五行：左图右文 -->
+      <div class="about-row about-row-1">
+        <div class="about-row-img-box">
+          <div class="about-row-img-placeholder">
+            <van-image :src="five" />
+          </div>
+        </div>
+        <div class="about-row-content about-row-content-1">
+          <div class="about-row-title">
+            {{ t('home.makeFriends') }}<br>{{ t('home.friendsGlobally') }}
+          </div>
+          <div class="about-row-desc">
+            {{ t('home.makeFriendsDesc') }}
+          </div>
+          <div class="about-row-btns" @click="jumpToB">
+            <button class="about-row-btn">
               {{ t('home.startVideoChat') }}
             </button>
           </div>
@@ -217,6 +295,244 @@ async function downloadApp() {
 </route>
 
 <style scoped>
+.swipe-full-height {
+  height: 100vh;
+}
+.swipe-item-bg {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+.video-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+}
+.swipe-item-content {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+}
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+.top-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.logo-box {
+  width: 40px;
+  height: 40px;
+  background: #ccc;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+.app-title {
+  color: #fff;
+  font-size: 24px;
+  font-weight: bold;
+}
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.lang-switch {
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+}
+.email-box {
+  width: 40px;
+  height: 40px;
+  background: #ccc;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+.main-title-wrap {
+  margin-top: 100px;
+  text-align: center;
+}
+.main-title-text {
+  color: #fff;
+  font-size: 40px;
+  font-weight: bold;
+  line-height: 1.1;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+.bottom-btns-wrap {
+  position: absolute;
+  left: 0;
+  bottom: 40px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.bottom-btns {
+  display: flex;
+  gap: 16px;
+}
+.download-btn {
+  color: #fff;
+  border-radius: 12px;
+  padding: 10px 18px 10px 50px;
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 500;
+}
+.jump-btn {
+  color: #fff;
+  border-radius: 12px;
+  padding: 10px 50px 10px 18px;
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 500;
+}
+.download-img {
+  width: 123px;
+  height: 43px;
+}
+.jianto-wrap {
+  margin-top: 16px;
+}
+.jianto-img-box {
+  width: 48px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 24px;
+  opacity: 0.7;
+}
+.swipe-item-light {
+  background: #fafbfc;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  overflow-y: auto;
+}
+.about-top-icon {
+  margin-top: 32px;
+  margin-bottom: 12px;
+}
+.about-top-icon-inner {
+  width: 48px;
+  height: 32px;
+  border: 2px dashed #bbb;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #bbb;
+  font-size: 24px;
+}
+.about-top-img {
+  width: 32px;
+  height: 20px;
+}
+.about-title {
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 32px;
+  color: black;
+}
+.about-row {
+  display: flex;
+  width: 90vw;
+  align-items: flex-start;
+  color: black;
+}
+.about-row-1 {
+  margin-bottom: 30px;
+}
+.about-row-2 {
+  max-width: 700px;
+  flex-direction: row-reverse;
+}
+.about-row-img-box {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+.about-row-img-placeholder {
+  width: 142px;
+  height: 288px;
+  background: #eee;
+  border-radius: 36px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.about-row-img-placeholder-text {
+  color: #bbb;
+  font-size: 18px;
+}
+.about-row-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.about-row-content-1 {
+  flex: 1.2;
+  padding-left: 32px;
+}
+.about-row-content-2 {
+  flex: 1.2;
+  padding-right: 25px;
+}
+.about-row-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+.about-row-desc {
+  color: #bbb;
+  font-size: 14px;
+  margin-bottom: 24px;
+  line-height: 1.3;
+}
+.about-row-btns {
+  display: flex;
+}
+.about-row-btn {
+  background: linear-gradient(90deg, #a18fff 0%, #5ee7df 100%);
+  color: #fff;
+  border: none;
+  border-radius: 32px;
+  padding: 10px 26px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
 .language-popup-overlay {
   position: fixed;
   top: 0;
