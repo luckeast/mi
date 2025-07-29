@@ -2,7 +2,7 @@
 import { useRouteCacheStore } from '@/stores'
 
 useHead({
-  title: 'Vue3 Vant Mobile',
+  title: 'videochat.today',
   meta: [
     {
       name: 'description',
@@ -17,7 +17,8 @@ useHead({
     {
       rel: 'icon',
       type: 'image/svg+xml',
-      href: () => preferredDark.value ? '/favicon-dark.svg' : '/favicon.svg',
+      // href: () => preferredDark.value ? '/favicon-dark.svg' : '/favicon.svg',
+      href: () => preferredDark.value ? '/favicon.ico' : '/favicon.ico',
     },
   ],
 })

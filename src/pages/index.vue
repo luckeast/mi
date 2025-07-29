@@ -3,8 +3,6 @@ import type { PickerColumn } from 'vant'
 import { languageColumns, locale } from '@/utils/i18n'
 import logo from '~/images/logo.png'
 import email from '~/images/email.png'
-import download from '~/images/download.png'
-import ty from '~/images/ty.png'
 import jianto from '~/images/jianto.png'
 import first from '~/images/first.png'
 import second from '~/images/second.png'
@@ -13,6 +11,7 @@ import fore from '~/images/fore.png'
 import five from '~/images/five.png'
 import up from '~/images/up.png'
 import spbg from '~/images/sp_bg.webp'
+import sp from '~/images/sp.png'
 import { getAppConfig } from '@/api'
 
 const { t } = useI18n()
@@ -301,7 +300,7 @@ function handleTouchMove(event: TouchEvent) {
               <!-- <image src="@/assets/logo.png" /> -->
               <van-image :src="logo" />
             </div>
-            <span class="app-title">AppName</span>
+            <span class="app-title">Earo</span>
           </div>
           <div class="top-bar-right">
             <span class="lang-switch" @click="openCustomLanguagePopup">{{ currentLanguage }}▼</span>
@@ -319,11 +318,27 @@ function handleTouchMove(event: TouchEvent) {
         <!-- 底部按钮 -->
         <div class="bottom-btns-wrap">
           <div class="bottom-btns">
-            <div class="download-btn" @click="downloadApp">
-              <van-image :src="download" class="download-img" />
+            <div class="download-btn" style="padding:8px 10px;" @click="downloadApp">
+              <van-image :src="sp" class="download-img" style="width: 26px; height: 22px;margin-right: 5px;" />
+              <div class="jump-btn-text">
+                <p style="font-size: 10px;">
+                  Download on the
+                </p>
+                <p style="font-size: 18px;line-height: 18px;font-weight: 600;">
+                  App Store
+                </p>
+              </div>
             </div>
-            <div class="jump-btn" @click="jumpToB">
-              <van-image :src="ty" class="download-img" />
+            <div class="jump-btn" style="padding:8px 10px;" @click="jumpToB">
+              <van-image :src="sp" class="download-img" style="width: 26px; height: 22px;margin-right: 5px;" />
+              <div class="jump-btn-text">
+                <p style="font-size: 10px;">
+                  {{ t('home.Videochat') }}
+                </p>
+                <p style="font-size: 18px;line-height: 18px;font-weight: 600;">
+                  {{ t('home.Startnow') }}
+                </p>
+              </div>
             </div>
           </div>
           <div class="jianto-wrap">
@@ -638,21 +653,23 @@ function handleTouchMove(event: TouchEvent) {
 }
 .download-btn {
   color: #fff;
-  border-radius: 12px;
-  padding: 0px 18px 0px 50px;
-  display: flex;
-  align-items: center;
-  font-size: 18px;
-  font-weight: 500;
-}
-.jump-btn {
-  color: #fff;
-  border-radius: 12px;
+  border-radius: 7px;
   padding: 10px 50px 10px 18px;
   display: flex;
   align-items: center;
   font-size: 18px;
   font-weight: 500;
+  background: #000;
+}
+.jump-btn {
+  color: #fff;
+  border-radius: 7px;
+  padding: 10px 50px 10px 18px;
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 500;
+  background: linear-gradient(90deg, #8746ff 0%, #45d9e7 100%);
 }
 .download-img {
   width: 123px;
@@ -740,9 +757,9 @@ function handleTouchMove(event: TouchEvent) {
 .about-row-img-placeholder {
   width: 142px;
   height: 288px;
-  background: #eee;
-  border-radius: 36px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  /* background: #eee; */
+  /* border-radius: 36px; */
+  /* box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08); */
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -810,6 +827,8 @@ function handleTouchMove(event: TouchEvent) {
   overflow: hidden;
   min-width: 120px;
   margin-right: 60px;
+  max-height: 310px;
+  overflow-y: auto;
 }
 
 .language-option {
