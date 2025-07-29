@@ -37,8 +37,42 @@ const showCustomLanguagePopup = ref(false)
 const currentLanguage = computed(() => languageColumns.find(l => l.value === locale.value)?.text || 'English')
 const appInstallUrl = ref('')
 
+// 添加 swipe 控制相关的响应式变量
+const swipeRef = ref()
+const isScrolling = ref(false)
+const scrollTimeout = ref<number | null>(null)
+const secondSwipeItemRef = ref()
+
 onMounted(async () => {
   await getAppInstallUrl()
+
+  // 监听第二个 swipe-item 的滚动事件
+  nextTick(() => {
+    if (secondSwipeItemRef.value) {
+      const element = secondSwipeItemRef.value.$el || secondSwipeItemRef.value
+      if (element) {
+        element.addEventListener('scroll', handleScroll, { passive: true })
+        element.addEventListener('wheel', handleWheel, { passive: false })
+        element.addEventListener('touchstart', handleTouchStart, { passive: false })
+        element.addEventListener('touchmove', handleTouchMove, { passive: false })
+      }
+    }
+  })
+})
+
+onUnmounted(() => {
+  // 清理事件监听器
+  if (secondSwipeItemRef.value) {
+    const element = secondSwipeItemRef.value.$el || secondSwipeItemRef.value
+    element?.removeEventListener('scroll', handleScroll)
+    element?.removeEventListener('wheel', handleWheel)
+    element?.removeEventListener('touchstart', handleTouchStart)
+    element?.removeEventListener('touchmove', handleTouchMove)
+  }
+
+  if (scrollTimeout.value) {
+    clearTimeout(scrollTimeout.value)
+  }
 })
 function onLanguageConfirm(event: { selectedOptions: PickerColumn }) {
   locale.value = event.selectedOptions[0].value as string
@@ -70,10 +104,162 @@ async function getAppInstallUrl() {
     appInstallUrl.value = extData?.data.app_install_url
   })
 }
+
+// 处理滚动事件，在滚动时禁用 swipe 切换
+function handleScroll(event: Event) {
+  const target = event.target as HTMLElement
+  const scrollHeight = target.scrollHeight
+  const clientHeight = target.clientHeight
+
+  // 只有在内容可以滚动时才设置滚动状态
+  if (scrollHeight > clientHeight) {
+    isScrolling.value = true
+
+    // 清除之前的定时器
+    if (scrollTimeout.value) {
+      clearTimeout(scrollTimeout.value)
+    }
+
+    // 设置新的定时器，滚动停止后恢复 swipe 功能
+    scrollTimeout.value = window.setTimeout(() => {
+      isScrolling.value = false
+    }, 500) // 500ms 后认为滚动停止，给更多时间
+  }
+}
+
+// 处理鼠标滚轮事件
+function handleWheel(event: WheelEvent) {
+  const target = event.currentTarget as HTMLElement
+  const scrollTop = target.scrollTop
+  const scrollHeight = target.scrollHeight
+  const clientHeight = target.clientHeight
+
+  // 检查是否在顶部或底部
+  const isAtTop = scrollTop === 0
+  const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1 // 添加1px的容差
+
+  // 只有在内容可以滚动时才设置滚动状态
+  if (scrollHeight > clientHeight) {
+    isScrolling.value = true
+
+    // 清除之前的定时器
+    if (scrollTimeout.value) {
+      clearTimeout(scrollTimeout.value)
+    }
+
+    // 设置新的定时器，滚动停止后恢复 swipe 功能
+    scrollTimeout.value = window.setTimeout(() => {
+      isScrolling.value = false
+    }, 500)
+  }
+
+  // 只有在真正到达边界时才阻止事件传播
+  // 在顶部向上滚动时，允许切换到上一页
+  if (isAtTop && event.deltaY < 0) {
+    // 允许切换到上一页，不阻止事件
+    isScrolling.value = false // 确保可以切换
+    return true
+  }
+
+  // 在底部向下滚动时，阻止事件传播（因为已经是最后一页）
+  if (isAtBottom && event.deltaY > 0) {
+    event.preventDefault()
+    return false
+  }
+}
+
+// 处理 swipe 切换事件
+function handleSwipeChange(index: number) {
+  // 当切换到第二页时，重置滚动状态
+  if (index === 1) {
+    isScrolling.value = false
+  }
+}
+
+// 处理触摸开始事件
+function handleTouchStart(event: TouchEvent) {
+  const target = event.currentTarget as HTMLElement
+  const scrollTop = target.scrollTop
+  const scrollHeight = target.scrollHeight
+  const clientHeight = target.clientHeight
+
+  // 检查是否在顶部或底部
+  const isAtTop = scrollTop === 0
+  const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1
+
+  // 记录触摸开始位置
+  const touch = event.touches[0]
+  target.dataset.touchStartY = touch.clientY.toString()
+  target.dataset.touchStartScrollTop = scrollTop.toString()
+  target.dataset.isAtTop = isAtTop.toString()
+  target.dataset.isAtBottom = isAtBottom.toString()
+
+  // 只有在内容可以滚动时才标记正在滚动
+  if (scrollHeight > clientHeight) {
+    // 不要在这里立即设置 isScrolling，让 touchmove 来处理
+  }
+}
+
+// 处理触摸移动事件
+function handleTouchMove(event: TouchEvent) {
+  const target = event.currentTarget as HTMLElement
+  const touchStartY = Number.parseInt(target.dataset.touchStartY || '0')
+
+  const touch = event.touches[0]
+  const deltaY = touch.clientY - touchStartY
+
+  // 检查当前滚动位置
+  const currentScrollTop = target.scrollTop
+  const scrollHeight = target.scrollHeight
+  const clientHeight = target.clientHeight
+  const currentIsAtTop = currentScrollTop === 0
+  const currentIsAtBottom = currentScrollTop + clientHeight >= scrollHeight - 1
+
+  // 在顶部向上滑动时，允许切换到上一页
+  if (currentIsAtTop && deltaY > 0) {
+    // 允许切换到上一页，不阻止事件
+    isScrolling.value = false // 确保可以切换
+    return true
+  }
+
+  // 在底部向下滑动时，阻止事件传播
+  if (currentIsAtBottom && deltaY < 0) {
+    event.preventDefault()
+    return false
+  }
+
+  // 如果内容有滚动，标记正在滚动并允许正常滚动
+  if (target.scrollHeight > target.clientHeight) {
+    isScrolling.value = true
+
+    // 清除之前的定时器
+    if (scrollTimeout.value) {
+      clearTimeout(scrollTimeout.value)
+    }
+
+    // 设置新的定时器，滚动停止后恢复 swipe 功能
+    scrollTimeout.value = window.setTimeout(() => {
+      isScrolling.value = false
+    }, 500)
+
+    return true
+  }
+
+  // 如果内容没有滚动，允许 swipe 切换
+  return true
+}
 </script>
 
 <template>
-  <van-swipe class="swipe-full-height" vertical :loop="false" :show-indicators="false">
+  <van-swipe
+    ref="swipeRef"
+    class="swipe-full-height"
+    vertical
+    :loop="false"
+    :show-indicators="false"
+    :touchable="!isScrolling"
+    @change="handleSwipeChange"
+  >
     <van-swipe-item class="swipe-item-bg">
       <video src="@/assets/video/home.mov" autoplay muted :loop="true" class="video-bg" />
       <div class="swipe-item-content">
@@ -117,7 +303,7 @@ async function getAppInstallUrl() {
         </div>
       </div>
     </van-swipe-item>
-    <van-swipe-item class="swipe-item-light">
+    <van-swipe-item ref="secondSwipeItemRef" class="swipe-item-light">
       <!-- 顶部信封icon -->
       <div class="about-top-icon">
         <div class="about-top-icon-inner">
@@ -436,6 +622,18 @@ async function getAppInstallUrl() {
   align-items: center;
   padding: 0;
   overflow-y: auto;
+  /* 确保滚动容器正常工作 */
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  /* 防止滚动时触发 swipe 切换 */
+  touch-action: pan-y;
+  /* 确保内容可以正常滚动 */
+  position: relative;
+  z-index: 1;
+  /* 确保触摸事件能正确处理 */
+  overscroll-behavior: contain;
+  /* 防止滚动边界反弹 */
+  overscroll-behavior-y: contain;
 }
 .about-top-icon {
   margin-top: 32px;
