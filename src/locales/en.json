@@ -1,0 +1,24 @@
+{
+  "home": {
+    "aboutUs": "About Us",
+    "mainTitle": "Live Video chat，",
+    "mainSubTitle": "Turn strangers into friends.",
+    "makeFriends": "Make",
+    "friendsGlobally": "Friends Globally",
+    "makeFriendsDesc": "Break through geographical and cultural barriers. Sogo allows users to have in-depth conversations with people from diverse backgrounds and time zones, facilitating cross-cultural exchanges and friendship-building.",
+    "startVideoChat": "Start Video Chat",
+    "instantVideoChat": "Instant Video Chat",
+    "instantVideoChatDesc": "Start interactive and engaging video chats immediately. Express your unique self and enjoy meaningful conversations with people from diverse backgrounds.",
+    "startVideoChatBtn": "Start Video Chat",
+    "Interactive": "Rich Interactive",
+    "subInteractive": "Features",
+    "Interactivedesc": "Beyond video chats, it offers a messaging function to maintain connections. It also has random video chat for unexpected encounters, advanced filtering for personalized search, and real - time translation to overcome language hurdles.",
+    "Security": "Security -",
+    "guaranteed": "guaranteed",
+    "Privacy": "Privacy",
+    "Securitydesc": "It prioritizes user safety. All video chats are encrypted, providing a secure environment where users can freely express themselves and connect with others without worry.",
+    "Interest": "Interest-Based",
+    "Matching": "Matching",
+    "Interestdesc": "Share your hobbies and interests to connect with like-minded individuals who share your passions. Whether you’re a football fanatic, art lover, or food connoisseur, find others who get excited about the same things."
+  }
+}

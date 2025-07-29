@@ -1,22 +1,59 @@
 import { createI18n } from 'vue-i18n'
-import enUS from 'vant/es/locale/lang/en-US'
-import zhCN from 'vant/es/locale/lang/zh-CN'
-// import arEG from 'vant/es/locale/lang/ar-EG'
 import { Locale } from 'vant'
 import type { PickerColumn } from 'vant'
 
-const FALLBACK_LOCALE = 'zh-CN'
-// const arEG = {}
+const FALLBACK_LOCALE = 'en'
+const ar = {}
+const de = {}
+const en = {}
+const es = {}
+const fr = {}
+const hi = {}
+const it = {}
+const ja = {}
+const ko = {}
+const pt = {}
+const ru = {}
+const th = {}
+const tr = {}
+const vi = {}
+const zhTw = {}
+
 const vantLocales = {
-  'zh-CN': zhCN,
-  'en-US': enUS,
-  // 'ar-EG': arEG,
+  en,
+  ar,
+  de,
+  es,
+  fr,
+  hi,
+  it,
+  ja,
+  ko,
+  pt,
+  ru,
+  th,
+  tr,
+  vi,
+  zhTw,
 }
 
 export const languageColumns: PickerColumn = [
-  { text: '简体中文', value: 'zh-CN' },
-  { text: 'English', value: 'en-US' },
-  // { text: 'alab', value: 'ar-EG' },
+  // { text: '繁體中文', value: 'zh-CN' },
+  { text: 'English', value: 'en' },
+  { text: 'العربية ', value: 'ar' },
+  { text: 'Deutsch', value: 'de' },
+  { text: 'Español', value: 'es' },
+  { text: 'Français', value: 'fr' },
+  { text: 'Hindi', value: 'hi' },
+  { text: 'Italiano', value: 'it' },
+  { text: '日本語', value: 'ja' },
+  { text: '한국어', value: 'ko' },
+  { text: 'Português', value: 'pt' },
+  { text: 'Русский', value: 'ru' },
+  { text: 'Thai', value: 'th' },
+  { text: 'Türkçe', value: 'tr' },
+  { text: 'Tiếng Việt', value: 'vi' },
+  { text: '繁體中文', value: 'zhTw' },
 ]
 
 export const i18n = setupI18n()

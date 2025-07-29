@@ -1,0 +1,24 @@
+{
+  "home": {
+    "aboutUs": "Sobre nosotros",
+    "mainTitle": "Chat de video en vivo,",
+    "mainSubTitle": "Convierte a extraños en amigos.",
+    "makeFriends": "Hacer",
+    "friendsGlobally": "Amigos a nivel mundial",
+    "makeFriendsDesc": "Supera barreras geográficas y culturales. Sogo permite a los usuarios conversar en profundidad con personas de diversos orígenes y zonas horarias, facilitando el intercambio intercultural y la creación de amistades.",
+    "startVideoChat": "Iniciar videochat",
+    "instantVideoChat": "Chat de video instantáneo",
+    "instantVideoChatDesc": "Inicia videochats interactivos y atractivos al instante. Expresa tu lado único y disfruta de conversaciones significativas con personas de diversos orígenes.",
+    "startVideoChatBtn": "Iniciar videochat",
+    "Interactive": "Interactivo enriquecido",
+    "subInteractive": "Características",
+    "Interactivedesc": "Además de los videochats, ofrece una función de mensajería para mantener la conexión. También cuenta con videochat aleatorio para encuentros inesperados, filtros avanzados para búsquedas personalizadas y traducción en tiempo real para superar las barreras lingüísticas.",
+    "Security": "Seguridad -",
+    "guaranteed": "garantizado",
+    "Privacy": "Privacidad",
+    "Securitydesc": "Prioriza la seguridad del usuario. Todos los chats de video están cifrados, lo que proporciona un entorno seguro donde los usuarios pueden expresarse libremente y conectar con otros sin preocupaciones.",
+    "Interest": "Basado en intereses",
+    "Matching": "Pareo",
+    "Interestdesc": "Comparte tus aficiones e intereses para conectar con personas afines que comparten tus pasiones. Ya seas fanático del fútbol, amante del arte o un experto en gastronomía, encuentra a otros que compartan tus mismos intereses."
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "home": {
+    "aboutUs": "關於我們",
+    "mainTitle": "即時視訊聊天，",
+    "mainSubTitle": "把陌生人變成朋友。",
+    "makeFriends": "製作",
+    "friendsGlobally": "全球好友",
+    "makeFriendsDesc": "打破地域和文化障礙。 Sogo 讓使用者與來自不同背景和時區的人進行深入交談，促進跨文化交流和建立友誼。",
+    "startVideoChat": "開始視訊聊天",
+    "instantVideoChat": "即時視訊聊天",
+    "instantVideoChatDesc": "立即開啟互動有趣的視訊聊天。展現獨特的自我，與來自不同背景的人們享受有意義的對話。",
+    "startVideoChatBtn": "開始視訊聊天",
+    "Interactive": "豐富的互動",
+    "subInteractive": "特徵",
+    "Interactivedesc": "除了視訊聊天之外，它還提供訊息功能，方便用戶保持聯繫。此外，它還支援隨機視訊聊天，方便用戶偶遇；進階篩選功能，方便用戶進行個人化搜尋；以及即時翻譯，方便用戶克服語言障礙。",
+    "Security": "安全 -",
+    "guaranteed": "保證",
+    "Privacy": "隱私",
+    "Securitydesc": "它優先考慮用戶安全。所有視訊聊天均經過加密，為用戶提供一個安全的環境，讓他們可以自由表達自己，無憂無慮地與他人聯繫。",
+    "Interest": "基於興趣",
+    "Matching": "匹配",
+    "Interestdesc": "分享你的嗜好和興趣，與志同道合的人建立聯繫。無論你是足球迷、藝術愛好者或美食鑑賞家，都能找到對相同事物感興趣的人。"
+  }
+}

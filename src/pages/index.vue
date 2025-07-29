@@ -12,6 +12,7 @@ import three from '~/images/three.png'
 import fore from '~/images/fore.png'
 import five from '~/images/five.png'
 import up from '~/images/up.png'
+import spbg from '~/images/sp_bg.webp'
 import { getAppConfig } from '@/api'
 
 const { t } = useI18n()
@@ -36,6 +37,10 @@ const languageValues = ref<Array<string>>([locale.value])
 const showCustomLanguagePopup = ref(false)
 const currentLanguage = computed(() => languageColumns.find(l => l.value === locale.value)?.text || 'English')
 const appInstallUrl = ref('')
+
+// 添加视频加载状态管理
+const isVideoLoaded = ref(true)
+const isVideoError = ref(false)
 
 // 添加 swipe 控制相关的响应式变量
 const swipeRef = ref()
@@ -103,6 +108,17 @@ async function getAppInstallUrl() {
       : undefined
     appInstallUrl.value = extData?.data.app_install_url
   })
+}
+
+// 视频加载事件处理
+function handleVideoLoad() {
+  isVideoLoaded.value = true
+  isVideoError.value = false
+}
+
+function handleVideoError() {
+  isVideoError.value = true
+  isVideoLoaded.value = false
 }
 
 // 处理滚动事件，在滚动时禁用 swipe 切换
@@ -261,7 +277,22 @@ function handleTouchMove(event: TouchEvent) {
     @change="handleSwipeChange"
   >
     <van-swipe-item class="swipe-item-bg">
-      <video src="@/assets/video/home.mov" autoplay muted :loop="true" class="video-bg" />
+      <!-- 视频占位图片，在视频未加载时显示 -->
+      <div v-if="!isVideoLoaded && !isVideoError" class="video-placeholder">
+        <van-image :src="spbg" class="video-placeholder-img" />
+      </div>
+      <!-- 视频元素 -->
+      <video
+        src="@/assets/video/home.mov"
+        autoplay
+        muted
+        :loop="true"
+        class="video-bg"
+        :class="{ 'video-loaded': isVideoLoaded }"
+        :poster="spbg"
+        @loadeddata="handleVideoLoad"
+        @error="handleVideoError"
+      />
       <div class="swipe-item-content">
         <!-- 顶部栏 -->
         <div class="top-bar">
@@ -336,7 +367,7 @@ function handleTouchMove(event: TouchEvent) {
         </div>
       </div>
       <!-- 第二行：左文右图 -->
-      <div class="about-row about-row-2" style="margin-bottom: 10px;">
+      <div class="about-row about-row-2">
         <div class="about-row-img-box">
           <div class="about-row-img-placeholder">
             <van-image :src="second" />
@@ -365,10 +396,10 @@ function handleTouchMove(event: TouchEvent) {
         </div>
         <div class="about-row-content about-row-content-1">
           <div class="about-row-title">
-            {{ t('home.makeFriends') }}<br>{{ t('home.friendsGlobally') }}
+            {{ t('home.Interactive') }}<br>{{ t('home.subInteractive') }}
           </div>
           <div class="about-row-desc">
-            {{ t('home.makeFriendsDesc') }}
+            {{ t('home.Interactivedesc') }}
           </div>
           <div class="about-row-btns" @click="jumpToB">
             <button class="about-row-btn">
@@ -378,7 +409,7 @@ function handleTouchMove(event: TouchEvent) {
         </div>
       </div>
       <!-- 第四行：左文右图 -->
-      <div class="about-row about-row-2" style="margin-bottom: 10px;">
+      <div class="about-row about-row-2">
         <div class="about-row-img-box">
           <div class="about-row-img-placeholder">
             <van-image :src="fore" />
@@ -386,10 +417,10 @@ function handleTouchMove(event: TouchEvent) {
         </div>
         <div class="about-row-content about-row-content-2">
           <div class="about-row-title" @click="jumpToB">
-            {{ t('home.instantVideoChat') }}
+            {{ t('home.Security') }}<br>{{ t('home.guaranteed') }}<br>{{ t('home.Privacy') }}
           </div>
           <div class="about-row-desc">
-            {{ t('home.instantVideoChatDesc') }}
+            {{ t('home.Securitydesc') }}
           </div>
           <div class="about-row-btns" @click="jumpToB">
             <button class="about-row-btn">
@@ -407,10 +438,10 @@ function handleTouchMove(event: TouchEvent) {
         </div>
         <div class="about-row-content about-row-content-1">
           <div class="about-row-title">
-            {{ t('home.makeFriends') }}<br>{{ t('home.friendsGlobally') }}
+            {{ t('home.Interest') }}<br>{{ t('home.Matching') }}
           </div>
           <div class="about-row-desc">
-            {{ t('home.makeFriendsDesc') }}
+            {{ t('home.Interestdesc') }}
           </div>
           <div class="about-row-btns" @click="jumpToB">
             <button class="about-row-btn">
@@ -499,6 +530,31 @@ function handleTouchMove(event: TouchEvent) {
   left: 0;
   top: 0;
   z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.video-bg.video-loaded {
+  opacity: 1;
+}
+
+.video-placeholder {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+
+.video-placeholder-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .swipe-item-content {
   position: absolute;
@@ -520,18 +576,18 @@ function handleTouchMove(event: TouchEvent) {
   gap: 8px;
 }
 .logo-box {
-  width: 40px;
-  height: 40px;
-  background: #ccc;
-  border-radius: 12px;
+  width: 32px;
+  height: 32px;
+  /* background: #ccc; */
+  /* border-radius: 12px; */
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  /* font-size: 24px; */
 }
 .app-title {
   color: #fff;
-  font-size: 24px;
+  font-size: 18px;
   font-weight: bold;
 }
 .top-bar-right {
@@ -541,12 +597,12 @@ function handleTouchMove(event: TouchEvent) {
 }
 .lang-switch {
   color: #fff;
-  font-size: 18px;
+  font-size: 14px;
   cursor: pointer;
 }
 .email-box {
-  width: 40px;
-  height: 40px;
+  width: 24px;
+  height: 24px;
   background: #ccc;
   border-radius: 12px;
   display: flex;
@@ -555,12 +611,13 @@ function handleTouchMove(event: TouchEvent) {
   font-size: 22px;
 }
 .main-title-wrap {
-  margin-top: 100px;
+  margin-top: 60px;
   text-align: center;
+  padding: 0 20px;
 }
 .main-title-text {
   color: #fff;
-  font-size: 40px;
+  font-size: 32px;
   font-weight: bold;
   line-height: 1.1;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -582,7 +639,7 @@ function handleTouchMove(event: TouchEvent) {
 .download-btn {
   color: #fff;
   border-radius: 12px;
-  padding: 10px 18px 10px 50px;
+  padding: 0px 18px 0px 50px;
   display: flex;
   align-items: center;
   font-size: 18px;
@@ -602,7 +659,7 @@ function handleTouchMove(event: TouchEvent) {
   height: 43px;
 }
 .jianto-wrap {
-  margin-top: 16px;
+  /* margin-top: 16px; */
 }
 .jianto-img-box {
   width: 48px;
@@ -642,18 +699,18 @@ function handleTouchMove(event: TouchEvent) {
 .about-top-icon-inner {
   width: 48px;
   height: 32px;
-  border: 2px dashed #bbb;
-  border-radius: 8px;
+  /* border: 2px dashed #bbb; */
+  /* border-radius: 8px; */
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #bbb;
+  /* color: #bbb; */
   font-size: 24px;
 }
-.about-top-img {
+/* .about-top-img {
   width: 32px;
   height: 20px;
-}
+} */
 .about-title {
   font-size: 32px;
   font-weight: bold;
@@ -668,11 +725,12 @@ function handleTouchMove(event: TouchEvent) {
   color: black;
 }
 .about-row-1 {
-  margin-bottom: 30px;
+  margin-bottom: 40px;
 }
 .about-row-2 {
   max-width: 700px;
   flex-direction: row-reverse;
+  margin-bottom: 40px;
 }
 .about-row-img-box {
   flex: 1;
@@ -742,7 +800,7 @@ function handleTouchMove(event: TouchEvent) {
   display: flex;
   justify-content: flex-end;
   align-items: flex-start;
-  padding-top: 70px;
+  padding-top: 55px;
 }
 
 .language-popup {
@@ -755,9 +813,9 @@ function handleTouchMove(event: TouchEvent) {
 }
 
 .language-option {
-  padding: 12px 24px;
+  padding: 10px 24px;
   color: #007aff;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s ease;

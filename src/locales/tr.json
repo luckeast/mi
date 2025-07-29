@@ -1,0 +1,24 @@
+{
+  "home": {
+    "aboutUs": "Hakkımızda",
+    "mainTitle": "Canlı Görüntülü sohbet，",
+    "mainSubTitle": "Yabancıları dost edin.",
+    "makeFriends": "Yapmak",
+    "friendsGlobally": "Dünya Çapında Arkadaşlar",
+    "makeFriendsDesc": "Coğrafi ve kültürel engelleri aşın. Sogo, kullanıcıların farklı geçmişlere ve zaman dilimlerine sahip insanlarla derinlemesine sohbetler yapmalarına olanak tanıyarak, kültürler arası etkileşimi ve arkadaşlıkların kurulmasını kolaylaştırır.",
+    "startVideoChat": "Görüntülü Sohbeti Başlat",
+    "instantVideoChat": "Anında Görüntülü Sohbet",
+    "instantVideoChatDesc": "Etkileşimli ve ilgi çekici görüntülü sohbetlere hemen başlayın. Benzersiz benliğinizi ifade edin ve farklı geçmişlere sahip insanlarla anlamlı sohbetlerin tadını çıkarın.",
+    "startVideoChatBtn": "Görüntülü Sohbeti Başlat",
+    "Interactive": "Zengin Etkileşimli",
+    "subInteractive": "Özellikler",
+    "Interactivedesc": "Görüntülü sohbetlerin yanı sıra, bağlantılarınızı sürdürmeniz için bir mesajlaşma işlevi de sunuyor. Ayrıca, beklenmedik karşılaşmalar için rastgele görüntülü sohbet, kişiselleştirilmiş arama için gelişmiş filtreleme ve dil engellerini aşmak için gerçek zamanlı çeviri gibi özellikler de sunuyor.",
+    "Security": "Güvenlik -",
+    "guaranteed": "garantili",
+    "Privacy": "Mahremiyet",
+    "Securitydesc": "Kullanıcı güvenliğine öncelik verir. Tüm görüntülü sohbetler şifrelenerek, kullanıcıların kendilerini özgürce ifade edebilecekleri ve endişe duymadan başkalarıyla bağlantı kurabilecekleri güvenli bir ortam sağlanır.",
+    "Interest": "İlgi Alanına Dayalı",
+    "Matching": "Eşleştirme",
+    "Interestdesc": "Tutkularınızı paylaşan benzer düşünen kişilerle bağlantı kurmak için hobilerinizi ve ilgi alanlarınızı paylaşın. İster futbol tutkunu, ister sanat aşığı, ister yemek meraklısı olun, aynı şeylerden heyecan duyan başkalarını bulun."
+  }
+}
