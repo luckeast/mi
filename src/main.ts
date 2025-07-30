@@ -22,6 +22,19 @@ import 'vant/es/dialog/style'
 import 'vant/es/notify/style'
 import 'vant/es/image-preview/style'
 
+// 版本号，发版时需同步更新
+const APP_VERSION = '3.12.0'
+
+if (localStorage.getItem('app_version') !== APP_VERSION) {
+  localStorage.setItem('app_version', APP_VERSION)
+  if (localStorage.getItem('app_version_inited')) {
+    window.location.reload()
+  }
+  else {
+    localStorage.setItem('app_version_inited', '1')
+  }
+}
+
 const app = createApp(App)
 const head = createHead()
 

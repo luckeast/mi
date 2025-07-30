@@ -16,7 +16,7 @@ useHead({
   link: [
     {
       rel: 'icon',
-      type: 'image/svg+xml',
+      type: 'image',
       // href: () => preferredDark.value ? '/favicon-dark.svg' : '/favicon.svg',
       href: () => preferredDark.value ? '/favicon.ico' : '/favicon.ico',
     },
