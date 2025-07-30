@@ -19,6 +19,8 @@
     "Securitydesc": "Kullanıcı güvenliğine öncelik verir. Tüm görüntülü sohbetler şifrelenerek, kullanıcıların kendilerini özgürce ifade edebilecekleri ve endişe duymadan başkalarıyla bağlantı kurabilecekleri güvenli bir ortam sağlanır.",
     "Interest": "İlgi Alanına Dayalı",
     "Matching": "Eşleştirme",
+    "Startnow": "Hemen başla",
+    "Videochat": "Görüntülü sohbet",
     "Interestdesc": "Tutkularınızı paylaşan benzer düşünen kişilerle bağlantı kurmak için hobilerinizi ve ilgi alanlarınızı paylaşın. İster futbol tutkunu, ister sanat aşığı, ister yemek meraklısı olun, aynı şeylerden heyecan duyan başkalarını bulun."
   }
 }

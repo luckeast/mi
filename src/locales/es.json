@@ -19,6 +19,8 @@
     "Securitydesc": "Prioriza la seguridad del usuario. Todos los chats de video están cifrados, lo que proporciona un entorno seguro donde los usuarios pueden expresarse libremente y conectar con otros sin preocupaciones.",
     "Interest": "Basado en intereses",
     "Matching": "Pareo",
-    "Interestdesc": "Comparte tus aficiones e intereses para conectar con personas afines que comparten tus pasiones. Ya seas fanático del fútbol, amante del arte o un experto en gastronomía, encuentra a otros que compartan tus mismos intereses."
+    "Interestdesc": "Comparte tus aficiones e intereses para conectar con personas afines que comparten tus pasiones. Ya seas fanático del fútbol, amante del arte o un experto en gastronomía, encuentra a otros que compartan tus mismos intereses.",
+    "Startnow": "Empieza ahora",
+    "Videochat": "Videochat"
   }
 }
