@@ -12,6 +12,7 @@ import five from '~/images/five.png'
 import up from '~/images/up.png'
 import spbg from '~/images/sp_bg.webp'
 import sp from '~/images/sp.png'
+import apple from '~/images/apple.png'
 import { getAppConfig } from '@/api'
 
 const { t } = useI18n()
@@ -282,7 +283,7 @@ function handleTouchMove(event: TouchEvent) {
       </div>
       <!-- 视频元素 -->
       <video
-        src="@/assets/video/home.mov"
+        src="@/assets/video/home.mp4"
         autoplay
         muted
         :loop="true"
@@ -292,6 +293,8 @@ function handleTouchMove(event: TouchEvent) {
         @loadeddata="handleVideoLoad"
         @error="handleVideoError"
       />
+      <!-- 蒙层 -->
+      <div class="video-overlay" />
       <div class="swipe-item-content">
         <!-- 顶部栏 -->
         <div class="top-bar">
@@ -318,24 +321,24 @@ function handleTouchMove(event: TouchEvent) {
         <!-- 底部按钮 -->
         <div class="bottom-btns-wrap">
           <div class="bottom-btns">
-            <div class="download-btn" style="padding:8px 10px;" @click="downloadApp">
-              <van-image :src="sp" class="download-img" style="width: 26px; height: 22px;margin-right: 5px;" />
+            <div class="download-btn" @click="downloadApp">
+              <van-image :src="apple" class="download-img" style="width: 26px; height: 22px;margin-right: 5px;" />
               <div class="jump-btn-text">
                 <p style="font-size: 10px;">
                   Download on the
                 </p>
-                <p style="font-size: 18px;line-height: 18px;font-weight: 600;">
+                <p style="font-size: 16px;line-height: 18px;font-weight: 600;">
                   App Store
                 </p>
               </div>
             </div>
-            <div class="jump-btn" style="padding:8px 10px;" @click="jumpToB">
+            <div class="jump-btn" @click="jumpToB">
               <van-image :src="sp" class="download-img" style="width: 26px; height: 22px;margin-right: 5px;" />
               <div class="jump-btn-text">
                 <p style="font-size: 10px;">
                   {{ t('home.Videochat') }}
                 </p>
-                <p style="font-size: 18px;line-height: 18px;font-weight: 600;">
+                <p style="font-size: 16px;line-height: 18px;font-weight: 600;">
                   {{ t('home.Startnow') }}
                 </p>
               </div>
@@ -571,6 +574,16 @@ function handleTouchMove(event: TouchEvent) {
   height: 100%;
   object-fit: cover;
 }
+
+.video-overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 3;
+}
 .swipe-item-content {
   position: absolute;
   left: 0;
@@ -654,22 +667,24 @@ function handleTouchMove(event: TouchEvent) {
 .download-btn {
   color: #fff;
   border-radius: 7px;
-  padding: 10px 50px 10px 18px;
+  padding: 8px 12px;
   display: flex;
   align-items: center;
   font-size: 18px;
   font-weight: 500;
   background: #000;
+  border: 1px solid #b2b4b6;
 }
 .jump-btn {
   color: #fff;
   border-radius: 7px;
-  padding: 10px 50px 10px 18px;
+  padding: 8px 12px;
   display: flex;
   align-items: center;
   font-size: 18px;
   font-weight: 500;
   background: linear-gradient(90deg, #8746ff 0%, #45d9e7 100%);
+  border: 1px solid #b2b4b6;
 }
 .download-img {
   width: 123px;
@@ -797,7 +812,7 @@ function handleTouchMove(event: TouchEvent) {
   display: flex;
 }
 .about-row-btn {
-  background: linear-gradient(90deg, #a18fff 0%, #5ee7df 100%);
+  background: linear-gradient(90deg, #8746ff 0%, #45d9e7 100%);
   color: #fff;
   border: none;
   border-radius: 32px;
