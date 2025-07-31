@@ -14,6 +14,7 @@ import spbg from '~/images/sp_bg.webp'
 import sp from '~/images/sp.png'
 import apple from '~/images/apple.png'
 import { getAppConfig } from '@/api'
+import { getSafeAreaBottom, isIOSDevice, setSafeAreaCSSVariables, watchSafeAreaChanges } from '@/utils/ios-safe-area'
 
 const { t } = useI18n()
 
@@ -47,9 +48,33 @@ const swipeRef = ref()
 const isScrolling = ref(false)
 const scrollTimeout = ref<number | null>(null)
 const secondSwipeItemRef = ref()
+const touchStartY = ref(0)
+const touchStartScrollTop = ref(0)
+const isTouchMoving = ref(false)
+
+// 检测是否为iOS设备
+const isIOS = computed(() => isIOSDevice())
+
+// 获取安全区域底部高度
+const safeAreaBottom = ref(0)
+
+// 清理安全区域监听器
+let cleanupSafeAreaWatcher: (() => void) | null = null
 
 onMounted(async () => {
   await getAppInstallUrl()
+  console.warn(233)
+  // 初始化iOS安全区域适配
+  if (isIOS.value) {
+    // 设置CSS变量
+    setSafeAreaCSSVariables()
+
+    // 获取安全区域高度
+    safeAreaBottom.value = getSafeAreaBottom()
+
+    // 监听屏幕方向变化
+    cleanupSafeAreaWatcher = watchSafeAreaChanges()
+  }
 
   // 监听第二个 swipe-item 的滚动事件
   nextTick(() => {
@@ -60,6 +85,7 @@ onMounted(async () => {
         element.addEventListener('wheel', handleWheel, { passive: false })
         element.addEventListener('touchstart', handleTouchStart, { passive: false })
         element.addEventListener('touchmove', handleTouchMove, { passive: false })
+        element.addEventListener('touchend', handleTouchEnd, { passive: true })
       }
     }
   })
@@ -73,10 +99,16 @@ onUnmounted(() => {
     element?.removeEventListener('wheel', handleWheel)
     element?.removeEventListener('touchstart', handleTouchStart)
     element?.removeEventListener('touchmove', handleTouchMove)
+    element?.removeEventListener('touchend', handleTouchEnd)
   }
 
   if (scrollTimeout.value) {
     clearTimeout(scrollTimeout.value)
+  }
+
+  // 清理安全区域监听器
+  if (cleanupSafeAreaWatcher) {
+    cleanupSafeAreaWatcher()
   }
 })
 function onLanguageConfirm(event: { selectedOptions: PickerColumn }) {
@@ -136,10 +168,11 @@ function handleScroll(event: Event) {
       clearTimeout(scrollTimeout.value)
     }
 
-    // 设置新的定时器，滚动停止后恢复 swipe 功能
+    // iOS设备使用更短的延迟时间
+    const delay = isIOS.value ? 200 : 300
     scrollTimeout.value = window.setTimeout(() => {
       isScrolling.value = false
-    }, 500) // 500ms 后认为滚动停止，给更多时间
+    }, delay)
   }
 }
 
@@ -199,30 +232,26 @@ function handleTouchStart(event: TouchEvent) {
   const scrollHeight = target.scrollHeight
   const clientHeight = target.clientHeight
 
+  // 记录触摸开始位置
+  const touch = event.touches[0]
+  touchStartY.value = touch.clientY
+  touchStartScrollTop.value = scrollTop
+  isTouchMoving.value = false
+
   // 检查是否在顶部或底部
   const isAtTop = scrollTop === 0
   const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1
 
-  // 记录触摸开始位置
-  const touch = event.touches[0]
-  target.dataset.touchStartY = touch.clientY.toString()
-  target.dataset.touchStartScrollTop = scrollTop.toString()
+  // 存储到 dataset 中供 touchmove 使用
   target.dataset.isAtTop = isAtTop.toString()
   target.dataset.isAtBottom = isAtBottom.toString()
-
-  // 只有在内容可以滚动时才标记正在滚动
-  if (scrollHeight > clientHeight) {
-    // 不要在这里立即设置 isScrolling，让 touchmove 来处理
-  }
 }
 
 // 处理触摸移动事件
 function handleTouchMove(event: TouchEvent) {
   const target = event.currentTarget as HTMLElement
-  const touchStartY = Number.parseInt(target.dataset.touchStartY || '0')
-
   const touch = event.touches[0]
-  const deltaY = touch.clientY - touchStartY
+  const deltaY = touch.clientY - touchStartY.value
 
   // 检查当前滚动位置
   const currentScrollTop = target.scrollTop
@@ -231,14 +260,17 @@ function handleTouchMove(event: TouchEvent) {
   const currentIsAtTop = currentScrollTop === 0
   const currentIsAtBottom = currentScrollTop + clientHeight >= scrollHeight - 1
 
-  // 在顶部向上滑动时，允许切换到上一页
+  // 标记正在触摸移动
+  isTouchMoving.value = true
+
+  // iOS特殊处理：在顶部向上滑动时，允许切换到上一页
   if (currentIsAtTop && deltaY > 0) {
     // 允许切换到上一页，不阻止事件
     isScrolling.value = false // 确保可以切换
     return true
   }
 
-  // 在底部向下滑动时，阻止事件传播
+  // iOS特殊处理：在底部向下滑动时，阻止事件传播
   if (currentIsAtBottom && deltaY < 0) {
     event.preventDefault()
     return false
@@ -253,16 +285,32 @@ function handleTouchMove(event: TouchEvent) {
       clearTimeout(scrollTimeout.value)
     }
 
-    // 设置新的定时器，滚动停止后恢复 swipe 功能
+    // iOS设备使用更短的延迟时间
+    const delay = isIOS.value ? 200 : 300
     scrollTimeout.value = window.setTimeout(() => {
       isScrolling.value = false
-    }, 500)
+    }, delay)
 
     return true
   }
 
   // 如果内容没有滚动，允许 swipe 切换
   return true
+}
+
+// 处理触摸结束事件
+function handleTouchEnd() {
+  // 重置触摸移动状态
+  isTouchMoving.value = false
+
+  // 在触摸结束时，如果正在滚动，则恢复 swipe 功能
+  if (isScrolling.value) {
+    // iOS设备需要更长的延迟来确保滚动动画完成
+    const delay = isIOS.value ? 150 : 100
+    setTimeout(() => {
+      isScrolling.value = false
+    }, delay)
+  }
 }
 </script>
 
@@ -276,7 +324,10 @@ function handleTouchMove(event: TouchEvent) {
     :touchable="!isScrolling"
     @change="handleSwipeChange"
   >
-    <van-swipe-item class="swipe-item-bg">
+    <van-swipe-item class="swipe-item-bg" :class="{ 'ios-device': isIOS }">
+      <!-- <div style="position: absolute;top: 70px;left: 40px;color: red;z-index: 3333;">
+        {{ isIOS }}{{ 1 }}
+      </div> -->
       <!-- 视频占位图片，在视频未加载时显示 -->
       <div v-if="!isVideoLoaded && !isVideoError" class="video-placeholder">
         <van-image :src="spbg" class="video-placeholder-img" />
@@ -286,6 +337,7 @@ function handleTouchMove(event: TouchEvent) {
         src="@/assets/video/home.mp4"
         autoplay
         muted
+        playsinline
         :loop="true"
         class="video-bg"
         :class="{ 'video-loaded': isVideoLoaded }"
@@ -319,7 +371,7 @@ function handleTouchMove(event: TouchEvent) {
           </div>
         </div>
         <!-- 底部按钮 -->
-        <div class="bottom-btns-wrap">
+        <div class="bottom-btns-wrap" :class="{ 'ios-device': isIOS }">
           <div class="bottom-btns">
             <div class="download-btn" @click="downloadApp">
               <van-image :src="apple" class="download-img" style="width: 26px; height: 22px;margin-right: 5px;" />
@@ -352,7 +404,7 @@ function handleTouchMove(event: TouchEvent) {
         </div>
       </div>
     </van-swipe-item>
-    <van-swipe-item ref="secondSwipeItemRef" class="swipe-item-light">
+    <van-swipe-item ref="secondSwipeItemRef" class="swipe-item-light" :class="{ 'ios-device': isIOS }">
       <!-- 顶部信封icon -->
       <div class="about-top-icon">
         <div class="about-top-icon-inner">
@@ -448,7 +500,7 @@ function handleTouchMove(event: TouchEvent) {
         </div>
       </div>
       <!-- 第五行：左图右文 -->
-      <div class="about-row about-row-1">
+      <div class="about-row about-row-1" :class="{ 'ios-device': isIOS }">
         <div class="about-row-img-box">
           <div class="about-row-img-placeholder">
             <van-image :src="five" />
@@ -532,6 +584,10 @@ function handleTouchMove(event: TouchEvent) {
 <style scoped>
 .swipe-full-height {
   height: 100vh;
+  /* iOS Safari 优化 */
+  -webkit-overflow-scrolling: touch;
+  /* 防止iOS的橡皮筋效果 */
+  overscroll-behavior: none;
 }
 .swipe-item-bg {
   position: relative;
@@ -719,10 +775,45 @@ function handleTouchMove(event: TouchEvent) {
   /* 确保内容可以正常滚动 */
   position: relative;
   z-index: 1;
+  /* iOS Safari 兼容性优化 */
+  overscroll-behavior: none;
+  /* 防止iOS的橡皮筋效果干扰swipe切换 */
+  -webkit-overflow-scrolling: touch;
   /* 确保触摸事件能正确处理 */
-  overscroll-behavior: contain;
-  /* 防止滚动边界反弹 */
-  overscroll-behavior-y: contain;
+  transform: translateZ(0);
+  /* 启用硬件加速 */
+  will-change: scroll-position;
+}
+
+/* iOS设备底部安全区域适配 */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .swipe-item-light {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* 为iOS设备添加额外的底部间距 */
+.ios-device {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 70px);
+}
+
+/* 使用CSS变量动态设置底部间距 */
+.swipe-item-light {
+  --ios-bottom-padding: 0px;
+  --safe-area-inset-bottom: 0px;
+}
+
+.swipe-item-light.ios-device {
+  --ios-bottom-padding: calc(var(--safe-area-inset-bottom) + 20px);
+  padding-bottom: var(--ios-bottom-padding);
+}
+
+/* iOS安全区域底部占位 */
+.ios-safe-area-bottom {
+  width: 100%;
+  background: transparent;
+  /* 确保在iOS设备上有足够的底部间距 */
+  min-height: var(--safe-area-inset-bottom);
 }
 .about-top-icon {
   margin-top: 32px;
