@@ -669,6 +669,8 @@ function handleTouchEnd() {
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 4px;
+  overflow: hidden;
   /* font-size: 24px; */
 }
 .app-title {
