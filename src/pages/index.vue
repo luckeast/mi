@@ -359,9 +359,11 @@ function handleTouchEnd() {
           </div>
           <div class="top-bar-right">
             <span class="lang-switch" @click="openCustomLanguagePopup">{{ currentLanguage }}▼</span>
-            <div class="email-box">
-              <van-image :src="email" />
-            </div>
+            <a href="mailto:earohelpcenter@outlook.com">
+              <div class="email-box">
+                <van-image :src="email" />
+              </div>
+            </a>
           </div>
         </div>
         <!-- 标题 -->
