@@ -126,7 +126,7 @@ function selectLanguage(lang: any) {
 }
 function jumpToB() {
   // window.location.href = 'https://test-h5.snoperp.com/h5_web/forweb?webCode=6666'
-  window.open('https://test-h5.snoperp.com/h5_web/forweb?webCode=true', '_blank')
+  window.open('https://test-h5.snoperp.com/h5_web/forweb', '_blank')
 }
 function downloadApp() {
   if (appInstallUrl.value) {
