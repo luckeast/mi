@@ -23,7 +23,7 @@ import 'vant/es/notify/style'
 import 'vant/es/image-preview/style'
 
 // 版本号，发版时需同步更新
-const APP_VERSION = '3.0'
+const APP_VERSION = '4.0'
 
 if (localStorage.getItem('app_version') !== APP_VERSION) {
   localStorage.setItem('app_version', APP_VERSION)
