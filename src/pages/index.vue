@@ -129,9 +129,11 @@ function jumpToB() {
   window.open('https://test-h5.snoperp.com/h5_web/forweb', '_blank')
 }
 function downloadApp() {
-  if (appInstallUrl.value) {
-    window.open(appInstallUrl.value, '_blank')
-  }
+  window.open('https://apps.apple.com/us/app/earo/id6748441626', '_blank')
+
+  // if (appInstallUrl.value) {
+  //   window.open(appInstallUrl.value, '_blank')
+  // }
 }
 async function getAppInstallUrl() {
   getAppConfig().then((data) => {
