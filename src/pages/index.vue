@@ -125,12 +125,12 @@ function selectLanguage(lang: any) {
   showCustomLanguagePopup.value = false
 }
 function jumpToB() {
-  // window.location.href = 'https://test-h5.snoperp.com/h5_web/forweb?webCode=6666'
-  window.open('https://bed.videochat.today/h5_web/forweb/', '_blank')
+  // window.location.href = 'https://test-h5.snoperp.com/h5_web/forweb/'
+  window.open('https://test-h5.snoperp.com/h5_web/forWeb/', '_blank')
+  // window.open('https://bed.videochat.today/h5_web/forweb/', '_blank')
 }
 function downloadApp() {
   window.open('https://apps.apple.com/us/app/earo/id6748441626', '_blank')
-
   // if (appInstallUrl.value) {
   //   window.open(appInstallUrl.value, '_blank')
   // }
