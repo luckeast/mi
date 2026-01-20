@@ -36,28 +36,35 @@ interface DownloadButton {
 }
 
 /**
- * 下载按钮配置数组
+ * Android系统下载按钮配置数组
  * 索引对应关系：
- * 0 - App Store (downloadType: "0")
- * 1 - Google Play (downloadType: "1")
- * 2 - APK (Android专用)
- * 3 - TestFlight (downloadType: "3")
+ * 0 - Google Play (androiddownloadType: "0")
+ * 1 - APK (androiddownloadType: "1")
  */
-const downloadButtons: DownloadButton[] = [
+const androidButtons: DownloadButton[] = [
   {
     imageUrl: zero,
     downloadName: 'Google Play',
     subtitle: 'Download on the',
   },
   {
-    imageUrl: one,
-    downloadName: 'App Store',
-    subtitle: 'Download on the',
-  },
-  {
     imageUrl: two,
     downloadName: 'Apk',
     subtitle: 'Download',
+  },
+]
+
+/**
+ * iOS系统下载按钮配置数组
+ * 索引对应关系：
+ * 0 - App Store (iosdownloadType: "0")
+ * 1 - TestFlight (iosdownloadType: "3")
+ */
+const iosButtons: DownloadButton[] = [
+  {
+    imageUrl: one,
+    downloadName: 'App Store',
+    subtitle: 'Download on the',
   },
   {
     imageUrl: thire,
@@ -90,6 +97,9 @@ const appInstallUrl = ref('')
 // Web数据对象
 const webData = ref<WebData | null>(null)
 
+// 数据加载状态，用于防止按钮闪烁
+const isWebDataReady = ref(false)
+
 // 动态获取App Logo（优先使用webData中的appImg）
 const appLogo = computed(() => webData.value?.appImg || logo)
 
@@ -98,44 +108,57 @@ const appName = computed(() => webData.value?.appName || 'Earo')
 
 /**
  * 根据系统类型和downloadType动态获取当前应该显示的下载按钮
- * Android系统: 固定显示APK按钮（index 2）
- * iOS系统: 根据downloadType决定显示哪个按钮
+ * Android系统: 根据androiddownloadType决定显示哪个按钮（Google Play 或 APK）
+ * iOS系统: 根据iosdownloadType决定显示哪个按钮（App Store 或 TestFlight）
  */
 const currentDownloadButton = computed<DownloadButton>(() => {
-  // Android系统，固定使用APK按钮
+  // Android系统，根据androiddownloadType决定
   if (isAndroidDevice()) {
-    console.warn('🤖 Android系统 - 使用APK按钮')
-    return downloadButtons[2] // APK 按钮
+    const type = webData.value?.androiddownloadType
+    console.warn('🤖 Android系统 - androiddownloadType:', type)
+
+    // Android downloadType 对应按钮索引的映射
+    const androidTypeMap: Record<string, number> = {
+      0: 0, // Google Play
+      1: 1, // APK
+    }
+
+    const buttonIndex = type ? androidTypeMap[type] : undefined
+    if (buttonIndex !== undefined && androidButtons[buttonIndex]) {
+      console.warn(`✅ Android使用按钮: ${androidButtons[buttonIndex].downloadName}`)
+      return androidButtons[buttonIndex]
+    }
+
+    // 默认返回 APK 按钮
+    console.warn('⚠️ Android使用默认按钮: APK')
+    return androidButtons[1] // 默认 APK
   }
 
-  // iOS系统，根据downloadType决定
-  if (webData.value?.downloadType) {
-    const type = webData.value.downloadType
-    console.warn('🍎 iOS系统 - downloadType:', type)
+  // iOS系统，根据iosdownloadType决定
+  const type = webData.value?.iosdownloadType
+  console.warn('🍎 iOS系统 - iosdownloadType:', type)
 
-    // downloadType 对应按钮索引的映射
-    const typeMap: Record<string, number> = {
-      0: 0, // App Store
-      1: 1, // Google Play
-      3: 3, // TestFlight
-    }
+  // iOS downloadType 对应按钮索引的映射
+  const iosTypeMap: Record<string, number> = {
+    0: 0, // App Store
+    1: 1, // TestFlight
+  }
 
-    const buttonIndex = typeMap[type]
-    if (buttonIndex !== undefined && downloadButtons[buttonIndex]) {
-      console.warn(`✅ 使用按钮: ${downloadButtons[buttonIndex].downloadName}`)
-      return downloadButtons[buttonIndex]
-    }
+  const buttonIndex = type ? iosTypeMap[type] : undefined
+  if (buttonIndex !== undefined && iosButtons[buttonIndex]) {
+    console.warn(`✅ iOS使用按钮: ${iosButtons[buttonIndex].downloadName}`)
+    return iosButtons[buttonIndex]
   }
 
   // 默认返回 App Store 按钮
-  console.warn('⚠️ 使用默认按钮: App Store')
-  return downloadButtons[0]
+  console.warn('⚠️ iOS使用默认按钮: App Store')
+  return iosButtons[0] // 默认 App Store
 })
 
 /**
  * 获取当前下载链接
  * Android系统: 使用 apkdownloadLink
- * iOS系统: 使用 downloadLink
+ * iOS系统: 使用 iosdownloadLink
  */
 const currentDownloadUrl = computed<string>(() => {
   const defaultUrl = 'https://apps.apple.com/us/app/earo/id6748441626'
@@ -147,8 +170,8 @@ const currentDownloadUrl = computed<string>(() => {
     return url
   }
 
-  // iOS及其他系统使用通用下载链接
-  const url = webData.value?.downloadLink || defaultUrl
+  // iOS系统使用iOS下载链接
+  const url = webData.value?.iosdownloadLink || webData.value?.downloadLink || defaultUrl
   console.warn('🍎 iOS下载链接:', url)
   return url
 })
@@ -312,18 +335,25 @@ async function getAppInstallUrl() {
         webData.value = extData.web_data[0]
 
         console.warn('========== App配置信息 ==========')
-        console.warn('下载链接-iOS (downloadLink):', webData.value.downloadLink)
-        console.warn('下载链接-Android (apkdownloadLink):', webData.value.apkdownloadLink)
+        console.warn('iOS下载链接 (iosdownloadLink):', webData.value.iosdownloadLink)
+        console.warn('iOS下载类型 (iosdownloadType):', webData.value.iosdownloadType)
+        console.warn('Android下载类型 (androiddownloadType):', webData.value.androiddownloadType)
+        console.warn('Android下载链接 (apkdownloadLink):', webData.value.apkdownloadLink)
         console.warn('App Logo (appImg):', webData.value.appImg)
         console.warn('App名称 (appName):', webData.value.appName)
         console.warn('网页链接 (webLink):', webData.value.webLink)
-        console.warn('下载类型 (downloadType):', webData.value.downloadType)
         console.warn('==================================')
       }
     }
+
+    // 数据加载完成，标记为就绪（无论是否成功获取到数据）
+    // 这样可以避免无限等待，即使数据加载失败也会显示默认按钮
+    isWebDataReady.value = true
   }
   catch (error) {
     console.error('获取App配置失败:', error)
+    // 即使加载失败，也标记为就绪，显示默认按钮
+    isWebDataReady.value = true
   }
 }
 
@@ -561,21 +591,24 @@ function handleTouchEnd() {
         <div class="bottom-btns-wrap" :class="{ 'ios-device': isIOS }">
           <div class="bottom-btns">
             <!-- 根据系统和downloadType动态显示下载按钮 -->
-            <div class="download-btn" @click="handleDownloadClick">
-              <van-image
-                :src="currentDownloadButton.imageUrl"
-                class="download-img"
-                style="width: 25px; height: 25px;margin-right: 5px;"
-              />
-              <div class="jump-btn-text">
-                <p style="font-size: 10px;">
-                  {{ currentDownloadButton.subtitle }}
-                </p>
-                <p style="font-size: 16px;line-height: 18px;font-weight: 600;">
-                  {{ currentDownloadButton.downloadName }}
-                </p>
+            <!-- 只有在数据加载完成后才显示，避免闪烁 -->
+            <Transition name="fade">
+              <div v-if="isWebDataReady" key="download-btn" class="download-btn" @click="handleDownloadClick">
+                <van-image
+                  :src="currentDownloadButton.imageUrl"
+                  class="download-img"
+                  style="width: 25px; height: 25px;margin-right: 5px;"
+                />
+                <div class="jump-btn-text">
+                  <p style="font-size: 10px;">
+                    {{ currentDownloadButton.subtitle }}
+                  </p>
+                  <p style="font-size: 16px;line-height: 18px;font-weight: 600;">
+                    {{ currentDownloadButton.downloadName }}
+                  </p>
+                </div>
               </div>
-            </div>
+            </Transition>
             <!-- 跳转按钮 -->
             <div class="jump-btn" @click="jumpToB">
               <van-image :src="sp" class="download-img" style="width: 26px; height: 22px;margin-right: 5px;" />
@@ -1149,5 +1182,16 @@ function handleTouchEnd() {
 
 .language-option:hover {
   background-color: #f8f9fa;
+}
+
+/* 下载按钮淡入动画 */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

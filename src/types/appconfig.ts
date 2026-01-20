@@ -2,8 +2,12 @@
  * Web数据对象类型定义
  */
 export interface WebData {
-  /** 下载链接（iOS等其他系统） */
-  downloadLink: string
+  /** iOS下载链接 */
+  iosdownloadLink: string
+  /** iOS下载类型 ("0": App Store, "1": TestFlight) */
+  iosdownloadType: string
+  /** Android下载类型 ("0": Google Play, "1": APK) */
+  androiddownloadType: string
   /** APK下载链接（Android系统专用） */
   apkdownloadLink: string
   /** App图标/Logo */
@@ -12,8 +16,10 @@ export interface WebData {
   appName: string
   /** 网页跳转链接 */
   webLink: string
-  /** 下载类型（预留字段） */
-  downloadType: string
+  /** 下载类型（旧字段，保留用于兼容） */
+  downloadType?: string
+  /** 下载链接（旧字段，保留用于兼容） */
+  downloadLink?: string
 }
 
 /**
