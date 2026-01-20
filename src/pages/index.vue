@@ -12,11 +12,59 @@ import five from '~/images/five.png'
 import up from '~/images/up.png'
 import spbg from '~/images/sp_bg.webp'
 import sp from '~/images/sp.png'
-import apple from '~/images/apple.png'
+import zero from '~/images/0.png'
+import one from '~/images/1.png'
+import two from '~/images/2.png'
+import thire from '~/images/3.png'
 import { getAppConfig } from '@/api'
 import { getSafeAreaBottom, isIOSDevice, setSafeAreaCSSVariables, watchSafeAreaChanges } from '@/utils/ios-safe-area'
+import type { AppExtData, WebData } from '@/types/appconfig'
+import { isAndroidDevice, printDeviceInfo } from '@/utils/device-detect'
 
 const { t } = useI18n()
+
+/**
+ * 下载按钮配置项类型
+ */
+interface DownloadButton {
+  /** 图片URL */
+  imageUrl: string
+  /** 下载名称 */
+  downloadName: string
+  /** 副标题 */
+  subtitle: string
+}
+
+/**
+ * 下载按钮配置数组
+ * 索引对应关系：
+ * 0 - App Store (downloadType: "0")
+ * 1 - Google Play (downloadType: "1")
+ * 2 - APK (Android专用)
+ * 3 - TestFlight (downloadType: "3")
+ */
+const downloadButtons: DownloadButton[] = [
+  {
+    imageUrl: zero,
+    downloadName: 'Google Play',
+    subtitle: 'Download on the',
+  },
+  {
+    imageUrl: one,
+    downloadName: 'App Store',
+    subtitle: 'Download on the',
+  },
+  {
+    imageUrl: two,
+    downloadName: 'Apk',
+    subtitle: 'Download',
+  },
+  {
+    imageUrl: thire,
+    downloadName: 'TestFlight',
+    subtitle: 'Download on the',
+  },
+]
 
 // const checked = computed({
 //   get: () => isDark.value,
@@ -38,6 +86,72 @@ const languageValues = ref<Array<string>>([locale.value])
 const showCustomLanguagePopup = ref(false)
 const currentLanguage = computed(() => languageColumns.find(l => l.value === locale.value)?.text || 'English')
 const appInstallUrl = ref('')
+
+// Web数据对象
+const webData = ref<WebData | null>(null)
+
+// 动态获取App Logo（优先使用webData中的appImg）
+const appLogo = computed(() => webData.value?.appImg || logo)
+
+// 动态获取App名称（优先使用webData中的appName）
+const appName = computed(() => webData.value?.appName || 'Earo')
+
+/**
+ * 根据系统类型和downloadType动态获取当前应该显示的下载按钮
+ * Android系统: 固定显示APK按钮（index 2）
+ * iOS系统: 根据downloadType决定显示哪个按钮
+ */
+const currentDownloadButton = computed<DownloadButton>(() => {
+  // Android系统，固定使用APK按钮
+  if (isAndroidDevice()) {
+    console.warn('🤖 Android系统 - 使用APK按钮')
+    return downloadButtons[2] // APK 按钮
+  }
+
+  // iOS系统，根据downloadType决定
+  if (webData.value?.downloadType) {
+    const type = webData.value.downloadType
+    console.warn('🍎 iOS系统 - downloadType:', type)
+
+    // downloadType 对应按钮索引的映射
+    const typeMap: Record<string, number> = {
+      0: 0, // App Store
+      1: 1, // Google Play
+      3: 3, // TestFlight
+    }
+
+    const buttonIndex = typeMap[type]
+    if (buttonIndex !== undefined && downloadButtons[buttonIndex]) {
+      console.warn(`✅ 使用按钮: ${downloadButtons[buttonIndex].downloadName}`)
+      return downloadButtons[buttonIndex]
+    }
+  }
+
+  // 默认返回 App Store 按钮
+  console.warn('⚠️ 使用默认按钮: App Store')
+  return downloadButtons[0]
+})
+
+/**
+ * 获取当前下载链接
+ * Android系统: 使用 apkdownloadLink
+ * iOS系统: 使用 downloadLink
+ */
+const currentDownloadUrl = computed<string>(() => {
+  const defaultUrl = 'https://apps.apple.com/us/app/earo/id6748441626'
+
+  if (isAndroidDevice()) {
+    // Android系统使用APK下载链接
+    const url = webData.value?.apkdownloadLink || defaultUrl
+    console.warn('🤖 Android下载链接:', url)
+    return url
+  }
+
+  // iOS及其他系统使用通用下载链接
+  const url = webData.value?.downloadLink || defaultUrl
+  console.warn('🍎 iOS下载链接:', url)
+  return url
+})
 
 // 添加视频加载状态管理
 const isVideoLoaded = ref(true)
@@ -62,8 +176,11 @@ const safeAreaBottom = ref(0)
 let cleanupSafeAreaWatcher: (() => void) | null = null
 
 onMounted(async () => {
+  // 打印设备信息
+  printDeviceInfo()
+
   await getAppInstallUrl()
-  console.warn(233)
+
   // 初始化iOS安全区域适配
   if (isIOS.value) {
     // 设置CSS变量
@@ -124,24 +241,90 @@ function selectLanguage(lang: any) {
   locale.value = lang
   showCustomLanguagePopup.value = false
 }
+/**
+ * 跳转到网页链接
+ * 优先使用 webData 中的 webLink，否则使用默认链接
+ */
 function jumpToB() {
-  // window.location.href = 'https://test-h5.snoperp.com/h5_web/forweb/'
-  window.open('https://test-h5.snoperp.com/h5_web/forWeb/', '_blank')
-  // window.open('https://bed.videochat.today/h5_web/forweb/', '_blank')
+  const targetUrl = webData.value?.webLink || 'https://test-h5.snoperp.com/h5_web/forWeb/'
+  window.open(targetUrl, '_blank')
 }
-function downloadApp() {
-  window.open('https://apps.apple.com/us/app/earo/id6748441626', '_blank')
-  // if (appInstallUrl.value) {
-  //   window.open(appInstallUrl.value, '_blank')
-  // }
+
+/**
+ * 下载App（备用函数，保留用于兼容性）
+ * Android系统使用 apkdownloadLink，其他系统使用 downloadLink
+ */
+function _downloadApp() {
+  let downloadUrl = 'https://apps.apple.com/us/app/earo/id6748441626' // 默认iOS链接
+
+  if (webData.value) {
+    // 检测是否为Android系统
+    if (isAndroidDevice()) {
+      // Android系统使用APK下载链接
+      downloadUrl = webData.value.apkdownloadLink || webData.value.downloadLink || downloadUrl
+      console.warn('🤖 Android系统 - 使用APK下载链接:', downloadUrl)
+    }
+    else {
+      // iOS及其他系统使用通用下载链接
+      downloadUrl = webData.value.downloadLink || downloadUrl
+      console.warn('🍎 其他系统 - 使用通用下载链接:', downloadUrl)
+    }
+  }
+
+  window.open(downloadUrl, '_blank')
 }
+
+/**
+ * 处理下载按钮点击
+ * 自动根据系统类型使用对应的下载链接
+ */
+function handleDownloadClick() {
+  const url = currentDownloadUrl.value
+  console.warn('========================================')
+  console.warn('📥 开始下载')
+  console.warn('系统类型:', isAndroidDevice() ? 'Android' : 'iOS')
+  console.warn('按钮样式:', currentDownloadButton.value.downloadName)
+  console.warn('下载链接:', url)
+  console.warn('========================================')
+  window.open(url, '_blank')
+}
+/**
+ * 获取App配置信息
+ * 包括安装URL和web_data数据
+ */
 async function getAppInstallUrl() {
-  getAppConfig().then((data) => {
-    const extData = Array.isArray(data.data.items)
-      ? data.data.items.find(item => item.name === 'app_ext_data')
+  try {
+    const response = await getAppConfig()
+
+    // 查找 app_ext_data 配置项
+    const extDataItem = Array.isArray(response.data.items)
+      ? response.data.items.find(item => item.name === 'app_ext_data')
       : undefined
-    appInstallUrl.value = extData?.data.app_install_url
-  })
+
+    if (extDataItem?.data) {
+      const extData = extDataItem.data as AppExtData
+
+      // 设置安装URL
+      appInstallUrl.value = extData.app_install_url || ''
+
+      // 提取 web_data 数据（取第一个）
+      if (extData.web_data && extData.web_data.length > 0) {
+        webData.value = extData.web_data[0]
+
+        console.warn('========== App配置信息 ==========')
+        console.warn('下载链接-iOS (downloadLink):', webData.value.downloadLink)
+        console.warn('下载链接-Android (apkdownloadLink):', webData.value.apkdownloadLink)
+        console.warn('App Logo (appImg):', webData.value.appImg)
+        console.warn('App名称 (appName):', webData.value.appName)
+        console.warn('网页链接 (webLink):', webData.value.webLink)
+        console.warn('下载类型 (downloadType):', webData.value.downloadType)
+        console.warn('==================================')
+      }
+    }
+  }
+  catch (error) {
+    console.error('获取App配置失败:', error)
+  }
 }
 
 // 视频加载事件处理
@@ -355,9 +538,9 @@ function handleTouchEnd() {
           <div class="top-bar-left">
             <div class="logo-box">
               <!-- <image src="@/assets/logo.png" /> -->
-              <van-image :src="logo" />
+              <van-image :src="appLogo" />
             </div>
-            <span class="app-title">Earo</span>
+            <span class="app-title">{{ appName }}</span>
           </div>
           <div class="top-bar-right">
             <span class="lang-switch" @click="openCustomLanguagePopup">{{ currentLanguage }}▼</span>
@@ -377,17 +560,23 @@ function handleTouchEnd() {
         <!-- 底部按钮 -->
         <div class="bottom-btns-wrap" :class="{ 'ios-device': isIOS }">
           <div class="bottom-btns">
-            <div class="download-btn" @click="downloadApp">
-              <van-image :src="apple" class="download-img" style="width: 26px; height: 22px;margin-right: 5px;" />
+            <!-- 根据系统和downloadType动态显示下载按钮 -->
+            <div class="download-btn" @click="handleDownloadClick">
+              <van-image
+                :src="currentDownloadButton.imageUrl"
+                class="download-img"
+                style="width: 25px; height: 25px;margin-right: 5px;"
+              />
               <div class="jump-btn-text">
                 <p style="font-size: 10px;">
-                  Download on the
+                  {{ currentDownloadButton.subtitle }}
                 </p>
                 <p style="font-size: 16px;line-height: 18px;font-weight: 600;">
-                  App Store
+                  {{ currentDownloadButton.downloadName }}
                 </p>
               </div>
             </div>
+            <!-- 跳转按钮 -->
             <div class="jump-btn" @click="jumpToB">
               <van-image :src="sp" class="download-img" style="width: 26px; height: 22px;margin-right: 5px;" />
               <div class="jump-btn-text">
