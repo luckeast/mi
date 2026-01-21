@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { PickerColumn } from 'vant'
 import { languageColumns, locale } from '@/utils/i18n'
-import logo from '~/images/logo.png'
 import email from '~/images/email.png'
 import jianto from '~/images/jianto.png'
 import first from '~/images/first.png'
@@ -101,10 +100,10 @@ const webData = ref<WebData | null>(null)
 const isWebDataReady = ref(false)
 
 // 动态获取App Logo（优先使用webData中的appImg）
-const appLogo = computed(() => webData.value?.appImg || logo)
+const appLogo = computed(() => webData.value?.appImg)
 
 // 动态获取App名称（优先使用webData中的appName）
-const appName = computed(() => webData.value?.appName || 'Earo')
+const appName = computed(() => webData.value?.appName)
 
 /**
  * 根据系统类型和downloadType动态获取当前应该显示的下载按钮
