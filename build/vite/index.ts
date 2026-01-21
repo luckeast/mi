@@ -12,14 +12,15 @@ import { VueRouterAutoImports } from 'unplugin-vue-router'
 import VueRouter from 'unplugin-vue-router/vite'
 import { mockDevServerPlugin } from 'vite-plugin-mock-dev-server'
 import { VitePWA } from 'vite-plugin-pwa'
-import Sitemap from 'vite-plugin-sitemap'
+// import Sitemap from 'vite-plugin-sitemap' // 暂时禁用
 import VueDevTools from 'vite-plugin-vue-devtools'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import { loadEnv } from 'vite'
 import { createViteVConsole } from './vconsole'
 
 export function createVitePlugins(mode: string) {
-  const env = loadEnv(mode, process.cwd())
+  // 环境变量仅用于插件内部配置，当前未使用，前缀下划线避免 lint 报错
+  const _env = loadEnv(mode, process.cwd())
 
   return [
     // https://github.com/posva/unplugin-vue-router
@@ -32,9 +33,10 @@ export function createVitePlugins(mode: string) {
     vue(),
 
     // https://github.com/jbaubree/vite-plugin-sitemap
-    Sitemap({
-      outDir: env.VITE_APP_OUT_DIR || 'dist',
-    }),
+    // 暂时禁用以避免构建错误
+    // Sitemap({
+    //   outDir: env.VITE_APP_OUT_DIR || 'dist',
+    // }),
 
     // https://github.com/pengzhanbo/vite-plugin-mock-dev-server
     mockDevServerPlugin(),

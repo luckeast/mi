@@ -277,25 +277,25 @@ function jumpToB() {
  * 下载App（备用函数，保留用于兼容性）
  * Android系统使用 apkdownloadLink，其他系统使用 downloadLink
  */
-function _downloadApp() {
-  let downloadUrl = 'https://apps.apple.com/us/app/earo/id6748441626' // 默认iOS链接
+// function _downloadApp() {
+//   let downloadUrl = 'https://apps.apple.com/us/app/earo/id6748441626' // 默认iOS链接
 
-  if (webData.value) {
-    // 检测是否为Android系统
-    if (isAndroidDevice()) {
-      // Android系统使用APK下载链接
-      downloadUrl = webData.value.apkdownloadLink || webData.value.downloadLink || downloadUrl
-      console.warn('🤖 Android系统 - 使用APK下载链接:', downloadUrl)
-    }
-    else {
-      // iOS及其他系统使用通用下载链接
-      downloadUrl = webData.value.downloadLink || downloadUrl
-      console.warn('🍎 其他系统 - 使用通用下载链接:', downloadUrl)
-    }
-  }
+//   if (webData.value) {
+//     // 检测是否为Android系统
+//     if (isAndroidDevice()) {
+//       // Android系统使用APK下载链接
+//       downloadUrl = webData.value.apkdownloadLink || webData.value.downloadLink || downloadUrl
+//       console.warn('🤖 Android系统 - 使用APK下载链接:', downloadUrl)
+//     }
+//     else {
+//       // iOS及其他系统使用通用下载链接
+//       downloadUrl = webData.value.downloadLink || downloadUrl
+//       console.warn('🍎 其他系统 - 使用通用下载链接:', downloadUrl)
+//     }
+//   }
 
-  window.open(downloadUrl, '_blank')
-}
+//   window.open(downloadUrl, '_blank')
+// }
 
 /**
  * 处理下载按钮点击
