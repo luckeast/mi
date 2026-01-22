@@ -5,5 +5,14 @@ export async function queryProse(): Promise<any> {
 }
 
 export async function getAppConfig(): Promise<any> {
-  return request('/config/getAppConfig')
+  return request({
+    url: '/config/getAppConfigPostV2',
+    method: 'POST',
+    data: {
+      ver: 0,
+    },
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
 }

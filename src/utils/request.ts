@@ -15,13 +15,13 @@ const request = axios.create({
   baseURL: import.meta.env.VITE_APP_API_BASE_URL,
   timeout: 6000, // 请求超时时间
   headers: {
-    'ver': '7.1.0',
-    'device-id': '49a4098d-1eab-4bac-8757-e906e6eadc34',
+    'ver': '7.1.8',
+    'device-id': '55d74a0d-2cac-489d-b083-b8bce8bf7e0d',
     'model': 'web',
     'lang': 'zh',
     'sys_lan': 'zh',
     'is_anchor': 'false',
-    'pkg': 'com.gewingeath.ios',
+    'pkg': 'app.vidchat.live',
     'platform': 'iOS',
     'device_lang': 'zh',
     'device_country': 'CN',
