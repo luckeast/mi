@@ -268,7 +268,7 @@ function selectLanguage(lang: any) {
  * 优先使用 webData 中的 webLink，否则使用默认链接
  */
 function jumpToB() {
-  const targetUrl = webData.value?.webLink || 'https://bed.videochat.today/h5_web/forWeb/'
+  const targetUrl = webData.value?.webLink
   window.open(targetUrl, '_blank')
 }
 

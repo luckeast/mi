@@ -19,7 +19,7 @@ const HTTP_HEADERS_CONFIG = {
   'lang': 'zh',
   'sys_lan': 'zh',
   'is_anchor': 'false',
-  'pkg': 'app.vidchat.live',
+  'pkg': 'background.aiposyy.world',
   'platform': 'iOS',
   'device_lang': 'zh',
   'device_country': 'CN',

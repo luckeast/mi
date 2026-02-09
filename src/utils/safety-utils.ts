@@ -232,9 +232,9 @@ export class AppConfigDecryptor {
   static decryptAppConfigResponse(
     encryptedResponse: string,
     baseUrl: string,
-    key2: string = 'ColoringPuzzle',
-    key3: string = 'PixelArt',
-    key4: string = 'GridColoring',
+    key2: string = 'Odyssey',
+    key3: string = 'Scenery',
+    key4: string = 'Yield',
   ): any {
     try {
       console.warn('--- 开始解密 AppConfig 响应 ---')
