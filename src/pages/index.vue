@@ -180,7 +180,8 @@ const isVideoLoaded = ref(true)
 const isVideoError = ref(false)
 
 // 添加 swipe 控制相关的响应式变量
-const swipeRef = ref()
+// @ts-expect-error - swipeRef is used in template as ref="swipeRef"
+const swipeRef = ref<any>() // 模板中使用：<van-swipe ref="swipeRef">
 const isScrolling = ref(false)
 const scrollTimeout = ref<number | null>(null)
 const secondSwipeItemRef = ref()

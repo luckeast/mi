@@ -6,7 +6,8 @@
  * @FilePath: \web-bl\src\router\index.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import { createRouter, createWebHistory } from 'vue-router/auto'
+import { createRouter, createWebHistory } from 'vue-router'
+import type { Router } from 'vue-router'
 import { handleHotUpdate, routes } from 'vue-router/auto-routes'
 
 import NProgress from 'nprogress'
@@ -20,7 +21,7 @@ import setPageTitle from '@/utils/set-page-title'
 
 NProgress.configure({ showSpinner: true, parent: '#app' })
 
-const router = createRouter({
+const router: Router = createRouter({
   history: createWebHistory(import.meta.env.VITE_APP_PUBLIC_PATH),
   routes,
 })
