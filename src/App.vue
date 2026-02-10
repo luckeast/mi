@@ -2,7 +2,7 @@
 import { useRouteCacheStore } from '@/stores'
 
 useHead({
-  title: 'videochat.today',
+  title: '18Xvideo',
   meta: [
     {
       name: 'description',
